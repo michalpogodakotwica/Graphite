@@ -1,0 +1,20 @@
+{
+    "name": "Graphite.Editor",
+    "rootNamespace": "",
+    "references": [
+        "Newtonsoft.Json.UnityConverters",
+        "Newtonsoft.Json.UnityConverters.Editor",
+        "UnityGraph"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

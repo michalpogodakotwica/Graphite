@@ -1,0 +1,10 @@
+GridBackground {
+    --grid-background-color: #282828;
+    --line-color: rgba(193, 196, 192, 0.1);
+    --thick-line-color: rgba(193, 196, 192, 0.1);
+    --spacing: 20;
+}
+
+.node .unity-property-field .unity-label {
+    min-width: 100;
+}
