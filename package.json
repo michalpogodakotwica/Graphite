@@ -5,7 +5,6 @@
   "displayName": "Graphite",
   "description": "Node editor framework",
   "dependencies": {
-    "jillejr.newtonsoft.json-for-unity.converters": "git://git@github.com/jilleJr/Newtonsoft.Json-for-Unity.Converters.git",
     "com.unity.modules.jsonserialize": "1.0.0"
   }
 }
