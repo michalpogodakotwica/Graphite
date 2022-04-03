@@ -1,12 +1,11 @@
-﻿using Graphite.Runtime;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor
+namespace com.michalpogodakotwica.graphite.Editor
 {
-    /// Draws button next to graph property that opens GraphEditorWindow
-    [CustomPropertyDrawer(typeof(Graph), true)]
+    /// Draws button next to graph property that opens GraphEditorWindow.
+    [CustomPropertyDrawer(typeof(IGraph), true)]
     public class GraphPropertyDrawer : PropertyDrawer 
     {
         public override VisualElement CreatePropertyGUI(SerializedProperty property)

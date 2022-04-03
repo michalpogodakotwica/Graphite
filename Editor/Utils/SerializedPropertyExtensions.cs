@@ -7,7 +7,7 @@ using UnityEngine;
 // Credit - https://gist.github.com/aholkner/214628a05b15f0bb169660945ac7923b
 // Provide simple value get/set methods for SerializedProperty.  Can be used with
 // any data types and with arbitrarily deeply-pathed properties.
-namespace Graphite.Editor.Utils
+namespace com.michalpogodakotwica.graphite.Editor.Utils
 {
     public static class SerializedPropertyExtensions
     {
@@ -43,9 +43,13 @@ namespace Graphite.Editor.Utils
                 container = GetPathComponentValue(container, deferredToken);
                 deferredToken = token;
             }
-            
-            Debug.Assert(!container.GetType().IsValueType, $"Cannot use SerializedObject.SetValue on a struct object, as the result will be set on a temporary. Either change {container.GetType().Name} to a class, or use SetValue with a parent member.");
-            
+
+            Debug.Assert(
+                !container.GetType().IsValueType,
+                $"Cannot use SerializedObject.SetValue on a struct object, as the result will be set on a temporary. " +
+                $"Either change {container.GetType().Name} to a class, or use SetValue with a parent member."
+            );
+
             SetPathComponentValue(container, deferredToken, value);
         }
 

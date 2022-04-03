@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Graphite.Editor.GraphDrawer.InputDrawers;
-using Graphite.Editor.GraphDrawer.OutputDrawers;
-using Graphite.Editor.Settings;
-using Graphite.Runtime;
-using Graphite.Runtime.Ports;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
+using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Node = UnityEditor.Experimental.GraphView.Node;
 
-namespace Graphite.Editor.GraphDrawer.NodeDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 {
     public abstract class NodeDrawer : Node
     {
@@ -148,8 +146,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
         
         protected virtual void DrawOutputs()
         {
-            Content.InitializeOutputs();
-            var outputFields = GetFieldsOfType(typeof(Output));
+            var outputFields = GetFieldsOfType(typeof(IOutput));
             foreach (var outputField in outputFields)
             {
                 var outputContent = (IOutput) outputField.GetValue(Content);

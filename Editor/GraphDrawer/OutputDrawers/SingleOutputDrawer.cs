@@ -1,14 +1,12 @@
-﻿using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Runtime;
-using Graphite.Runtime.Ports;
+﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 
-namespace Graphite.Editor.GraphDrawer.OutputDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers
 {
     [CustomOutputDrawer(typeof(IOutput))]
     public class SingleOutputDrawer : OutputDrawer
     {
-        public SingleOutputDrawer(Output content, NodeDrawer parent, SerializedProperty outputProperty) 
+        public SingleOutputDrawer(IOutput content, NodeDrawer parent, SerializedProperty outputProperty) 
             : base(content, parent, outputProperty)
         {
         }

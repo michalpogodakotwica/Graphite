@@ -1,6 +1,7 @@
 ﻿using System;
+using com.michalpogodakotwica.graphite;
 
-namespace Graphite.Runtime.Ports
+namespace ReferenceGraph
 {
     [Serializable]
     public class Output : IOutput

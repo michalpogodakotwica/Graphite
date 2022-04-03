@@ -1,7 +1,7 @@
 ﻿using System;
-using Graphite.Editor.ElementDrawerProvider;
+using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
 
-namespace Graphite.Editor.GraphDrawer.InputDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers
 {
     public class CustomInputDrawerAttribute : CustomDrawerAttribute
     {

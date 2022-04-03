@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Graphite.Editor.Settings;
-using Graphite.Editor.Utils;
-using Graphite.Runtime;
-using Graphite.Runtime.Attributes;
+using com.michalpogodakotwica.graphite.Attributes;
+using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
+using com.michalpogodakotwica.graphite.Editor.Settings;
+using com.michalpogodakotwica.graphite.Editor.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Graphite.Editor
+namespace com.michalpogodakotwica.graphite.Editor
 {
     /// Parent for graph view. Serializes property path to graph and reopens editor on Unity restart.
     public class GraphEditorWindow : EditorWindow, ISerializationCallbackReceiver
     {
+        private static readonly DrawerTypeMapping<IGraph, GraphDrawer.GraphDrawer, CustomGraphDrawerAttribute>
+            GraphDrawerMapping = new();     
+
         [SerializeField, HideInInspector]
         private Object _graphPropertySerializationRoot;
         [SerializeField, HideInInspector]
@@ -26,7 +30,8 @@ namespace Graphite.Editor
         private int _sceneGraphOwnerComponentIndex;
         [SerializeField, HideInInspector]
         private string _sceneGraphOwnerComponentType;
-        
+
+        public IGraph Graph { get; private set; }
         public GraphDrawer.GraphDrawer GraphDrawer { get; private set; }
         public SerializedProperty GraphProperty { get; private set; }
         public GraphViewSettings ViewSettings { get; private set; }
@@ -131,10 +136,11 @@ namespace Graphite.Editor
 
             GraphProperty = graphProperty;
             
-            var graph = (Graph)GraphProperty?.GetValue();
+            var graph = (IGraph)GraphProperty?.GetValue();
             if (graph == null)
                 return;
-
+            
+            Graph = graph;
             if (GraphDrawer != null)
                 rootVisualElement.Remove(GraphDrawer);
 
@@ -142,9 +148,14 @@ namespace Graphite.Editor
             GraphDrawer = CreateGraphView(graph);
         }
 
-        protected virtual GraphDrawer.GraphDrawer CreateGraphView(Graph graph)
+        protected virtual GraphDrawer.GraphDrawer CreateGraphView(IGraph graph)
         {
-            GraphDrawer = new GraphDrawer.GraphDrawer(GraphProperty.FindPropertyRelative("_nodes"), graph, this, ViewSettings);
+            var graphDrawerType = GraphDrawerMapping.GetDrawerForType(graph.GetType());
+
+            GraphDrawer = (GraphDrawer.GraphDrawer)Activator.CreateInstance(
+                graphDrawerType,
+                new object[] { this }
+            );
             
             titleContent = new GUIContent(ViewSettings.DisplaySettings.Title);
             rootVisualElement.Add(GraphDrawer);

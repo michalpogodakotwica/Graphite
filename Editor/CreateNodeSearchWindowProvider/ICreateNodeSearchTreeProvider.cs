@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Graphite.Editor.CreateNodeSearchWindowProvider
+namespace com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider
 {
     public interface ICreateNodeSearchTreeProvider
     {

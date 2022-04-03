@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Graphite.Runtime;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace Graphite.Editor.CreateNodeSearchWindowProvider
+namespace com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider
 {
     public class CreateNodeSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
@@ -65,7 +64,7 @@ namespace Graphite.Editor.CreateNodeSearchWindowProvider
             var nodeCreationData = (CreateNodeEntry)searchTreeEntry.userData;
             var node = nodeCreationData.CreateNode.Invoke();
             node.Position = _graphDrawer.ScreenToGraphPosition(context.screenMousePosition);
-            _graphDrawer.ModifyWithUndo(() => _graphDrawer.AddNodes(new List<INode> { node }));
+            _graphDrawer.AddNodes(new List<INode> { node });
             return true;
         }
     }

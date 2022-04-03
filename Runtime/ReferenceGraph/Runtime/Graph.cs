@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using com.michalpogodakotwica.graphite;
 using UnityEngine;
 
-namespace Graphite.Runtime
+namespace ReferenceGraph
 {
     [Serializable]
 #if ODIN_INSPECTOR
     [DrawWithUnity]
 #endif
-    public class Graph : IEnumerable<INode>
+    public class Graph : IGraph
     {
         [SerializeReference]
         private List<INode> _nodes;
@@ -30,19 +30,17 @@ namespace Graphite.Runtime
 
             _wasInitialized = true;
             foreach (var node in _nodes)
-                node.InitializeOutputs();
+                node.Initialize();
+        }
+
+        public IEnumerable<INode> Nodes()
+        {
+            return _nodes;
         }
 
         public IEnumerator<INode> GetEnumerator()
         {
-            Initialize();
             return _nodes.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            Initialize();
-            return GetEnumerator();
         }
     }
 }

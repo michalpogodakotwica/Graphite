@@ -1,21 +1,20 @@
-﻿using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Editor.Settings;
-using Graphite.Runtime.Ports;
+﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.GraphDrawer.OutputDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers
 {
     public abstract class OutputDrawer
     {
         public readonly NodeDrawer Parent;
-        public readonly Output Content;
+        public readonly IOutput Content;
         public readonly Port Port;
         
         public SerializedProperty OutputProperty { get; private set; }
 
-        protected OutputDrawer(Output content, NodeDrawer parent, SerializedProperty outputProperty)
+        protected OutputDrawer(IOutput content, NodeDrawer parent, SerializedProperty outputProperty)
         {
             Parent = parent;
             OutputProperty = outputProperty;

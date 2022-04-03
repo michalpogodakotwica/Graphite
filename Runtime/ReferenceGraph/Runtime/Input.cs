@@ -1,11 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using com.michalpogodakotwica.graphite;
 using UnityEngine;
 
-namespace Graphite.Runtime.Ports
+namespace ReferenceGraph
 {
+    public interface ISingleInput : IInput
+    {
+        IOutput Connection { get; }
+    }
+    
     [Serializable]
-    public abstract class SingleInput : IInput
+    public abstract class Input : ISingleInput
     {
         [SerializeReference]
         protected IOutput Connection; 
@@ -21,25 +26,14 @@ namespace Graphite.Runtime.Ports
                 Connection = null;
         }
 
-        public IEnumerable<IOutput> Connections
-        {
-            get
-            {
-                if (Connection != null)
-                {
-                    yield return Connection;
-                }
-            }
-        }
-
-        public IOutput GetConnection() => Connection;
         public abstract Type Type { get; }
+        IOutput ISingleInput.Connection => Connection;
     }
     
     [Serializable]
-    public class SingleInput<T> : SingleInput
+    public class Input<T> : Input
     {
-        public SingleInput(IOutput connection = null)
+        public Input(IOutput connection = null)
         {
             if(connection == null)
                 return;
@@ -53,7 +47,7 @@ namespace Graphite.Runtime.Ports
             value = Connection != null ? (T) Connection.Value : default(T); 
             return Connection != null;
         }
-        
+
         public override Type Type => typeof(T);
     }
 }

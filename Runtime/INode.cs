@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Graphite.Runtime
+namespace com.michalpogodakotwica.graphite
 {
     public interface INode
     {
-        void InitializeOutputs();
         public Vector2 Position { get; set; }
     }
 }

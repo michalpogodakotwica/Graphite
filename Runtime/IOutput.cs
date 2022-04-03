@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Graphite.Runtime
+namespace com.michalpogodakotwica.graphite
 {
-    public interface IOutput 
+    public interface IOutput
     {
-        internal object Value { get; }
+        object Value { get; }
         Type Type { get; }
     }
 }

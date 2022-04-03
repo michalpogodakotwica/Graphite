@@ -1,36 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Editor.GraphDrawer.OutputDrawers;
-using Graphite.Editor.Settings;
-using Graphite.Editor.Utils;
-using Graphite.Runtime;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
+using com.michalpogodakotwica.graphite.Editor.SerializationBackend;
+using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.GraphDrawer
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 {
-    public class GraphDrawer : GraphView, IDisposable
+    public abstract class GraphDrawer : GraphView, IDisposable
     {
         public readonly GraphViewSettings Settings;
         public readonly GraphEditorWindow EditorWindow;
         
-        private readonly SerializedProperty _graphNodes;
-        private readonly Graph _graph;
+        public SerializedProperty GraphProperty { get; }
+        private readonly IGraph _graph;
 
         private readonly CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider _createNodeSearchWindowProviderProvider;
         
+        public readonly List<NodeDrawer> NodeDrawers = new ();
         public readonly Dictionary<IOutput, OutputDrawer> OutputsMapping = new();
-        private readonly List<NodeDrawer> _nodeViewsInSerializedArrayOrder = new();
+        protected IGraphSerializationBackend GraphSerializationBackend;
 
-        public GraphDrawer(SerializedProperty graphNodes, Graph graph, GraphEditorWindow editorWindow, GraphViewSettings settings)
+        public GraphDrawer(GraphEditorWindow editorWindow)
         {
-            _graphNodes = graphNodes;
-            _graph = graph;
-            Settings = settings;
+            GraphProperty = editorWindow.GraphProperty;
+            _graph = editorWindow.Graph;
+            Settings = editorWindow.ViewSettings;
 
             EditorWindow = editorWindow;
             
@@ -42,23 +42,23 @@ namespace Graphite.Editor.GraphDrawer
             this.AddManipulator(new RectangleSelector());
 
             SetupZoom(
-                settings.DisplaySettings.ScaleSettings.MinScale,
-                settings.DisplaySettings.ScaleSettings.MaxScale,
-                settings.DisplaySettings.ScaleSettings.ScaleStep,
-                settings.DisplaySettings.ScaleSettings.ReferenceScale
+                Settings.DisplaySettings.ScaleSettings.MinScale,
+                Settings.DisplaySettings.ScaleSettings.MaxScale,
+                Settings.DisplaySettings.ScaleSettings.ScaleStep,
+                Settings.DisplaySettings.ScaleSettings.ReferenceScale
             );
 
-            foreach (var styleSheet in settings.DisplaySettings.GraphStyleSheets)
+            foreach (var styleSheet in Settings.DisplaySettings.GraphStyleSheets)
             {
                 styleSheets.Add(styleSheet);
             }
 
-            if (settings.MiniMapSettings.EnableMinimap)
+            if (Settings.MiniMapSettings.EnableMinimap)
             {
                 Minimap.AddMinimapManipulator(this);
             }
 
-            if (settings.DisplaySettings.EnableGrid)
+            if (Settings.DisplaySettings.EnableGrid)
             {
                 var grid = new GridBackground();
                 Insert(0, grid);
@@ -77,7 +77,7 @@ namespace Graphite.Editor.GraphDrawer
         {
             Undo.undoRedoPerformed += RedrawGraph;
             nodeCreationRequest += OnNodeCreationRequest; 
-            graphViewChanged += InternalGraphViewChangeWithUndo;
+            graphViewChanged += InternalGraphViewChange;
 
             if (Settings.CopyPasteHandler == null) 
                 return;
@@ -90,7 +90,7 @@ namespace Graphite.Editor.GraphDrawer
         private void RemoveListeners()
         {
             Undo.undoRedoPerformed -= RedrawGraph;
-            graphViewChanged -= InternalGraphViewChangeWithUndo;
+            graphViewChanged -= InternalGraphViewChange;
             nodeCreationRequest -= OnNodeCreationRequest;
 
             if (Settings.CopyPasteHandler == null) 
@@ -106,16 +106,52 @@ namespace Graphite.Editor.GraphDrawer
             ClearGraph();
             DrawGraph();
         }
+        
+        public void AddNodes(List<INode> nodesToAdd)
+        {
+            if (nodesToAdd == null || nodesToAdd.Count == 0)
+            {
+                return;
+            }
+            
+            ClearSelection();
+            
+            var addedNodes = GraphSerializationBackend.AddNodes(this, nodesToAdd);
+            
+            foreach (var (nodeSerializedProperty, node) in addedNodes)
+            {
+                var drawer = CreateNodeDrawer(node, nodeSerializedProperty);
+                AddNodeDrawer(drawer);
+                AddToSelection(drawer);
+                drawer.DrawConnections();
+            }
+        }
+        
+        private GraphViewChange InternalGraphViewChange(GraphViewChange graphViewChange)
+        {
+            graphViewChange = GraphSerializationBackend.SerializeGraphViewChange(this, graphViewChange);
+
+            if (graphViewChange.elementsToRemove != null)
+            {
+                foreach (var elementToRemove in graphViewChange.elementsToRemove)
+                {
+                    if (elementToRemove is NodeDrawer nodeDrawer)
+                        RemoveNodeDrawer(nodeDrawer);
+                }
+            }
+
+            return graphViewChange;
+        }
 
         private void ClearGraph()
         {
-            foreach (var nodeView in _nodeViewsInSerializedArrayOrder)
+            foreach (var nodeView in NodeDrawers)
             {
                 nodeView.ClearNode();
                 RemoveElement(nodeView);
             }
 
-            _nodeViewsInSerializedArrayOrder.Clear();
+            NodeDrawers.Clear();
             
             foreach (var edge in edges)
                 RemoveElement(edge);
@@ -123,15 +159,10 @@ namespace Graphite.Editor.GraphDrawer
         
         protected virtual void DrawGraph()
         {
-            _graphNodes.serializedObject.Update();
-            
-            var i = 0;
-            foreach (var node in _graph)
+            foreach (var node in GraphSerializationBackend.GetAllNodes(this))
             {
-                var nodeProperty = _graphNodes.GetArrayElementAtIndex(i);
-                var drawer = CreateNodeDrawer(node, nodeProperty);
+                var drawer = CreateNodeDrawer(node.Item2, node.Item1);
                 AddNodeDrawer(drawer);
-                i++;
             }
             
             foreach (var node in nodes.Where(n => n is NodeDrawer).Cast<NodeDrawer>())
@@ -154,14 +185,14 @@ namespace Graphite.Editor.GraphDrawer
         {
             drawer.ClearNode();
             RemoveElement(drawer);
-            _nodeViewsInSerializedArrayOrder.Remove(drawer);
+            NodeDrawers.Remove(drawer);
         }
 
-        protected  virtual void AddNodeDrawer(NodeDrawer drawer)
+        protected virtual void AddNodeDrawer(NodeDrawer drawer)
         {
             drawer.AddNode();
             AddElement(drawer);
-            _nodeViewsInSerializedArrayOrder.Add(drawer);
+            NodeDrawers.Add(drawer);
         }
 
         protected virtual void OnNodeCreationRequest(NodeCreationContext context)
@@ -175,157 +206,6 @@ namespace Graphite.Editor.GraphDrawer
             var windowRoot = EditorWindow.rootVisualElement;
             var windowMousePosition = windowRoot.ChangeCoordinatesTo(windowRoot.parent, screenPosition - EditorWindow.position.position);
             return contentViewContainer.WorldToLocal(windowMousePosition);
-        }
-
-        public void ModifyWithUndo(Action applyModification)
-        {
-            _graphNodes.serializedObject.Update();
-            Undo.RecordObject(_graphNodes.serializedObject.targetObject, $"Graph changes");
-            applyModification();
-            EditorUtility.SetDirty(_graphNodes.serializedObject.targetObject);
-            _graphNodes.serializedObject.ApplyModifiedProperties();
-        }
-
-        private GraphViewChange InternalGraphViewChangeWithUndo(GraphViewChange viewChanges)
-        {
-            GraphViewChange graphViewChange = default;
-            ModifyWithUndo(() =>
-            {
-                graphViewChange = InternalGraphViewChange(viewChanges);
-            });
-            return graphViewChange;
-        }
-
-        public void AddNodes(List<INode> nodesToAdd)
-        {
-            ClearSelection();
-
-            var newViews = new List<NodeDrawer>();
-            foreach (var node in nodesToAdd)
-            {
-                var size = _graphNodes.arraySize;
-                _graphNodes.arraySize++;
-                _graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-                
-                _graphNodes.GetArrayElementAtIndex(size).managedReferenceValue = node;
-                _graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-
-                var nodeProperty = _graphNodes.GetArrayElementAtIndex(size);
-                
-                var drawer = CreateNodeDrawer(node, nodeProperty);
-                AddNodeDrawer(drawer);
-                EditorUtility.SetDirty(_graphNodes.serializedObject.targetObject);
-                
-                newViews.Add(drawer);
-            }
-
-            foreach (var drawer in newViews)
-            {
-                drawer.DrawConnections();
-            }
-
-            foreach (var drawer in newViews)
-            {
-                AddToSelection(drawer);
-            }
-        }
-        
-        protected virtual GraphViewChange InternalGraphViewChange(GraphViewChange viewChanges)
-        {
-            if(viewChanges.movedElements != null)
-                MoveNodeViews(ref viewChanges.movedElements, viewChanges.moveDelta);
-            
-            if (viewChanges.elementsToRemove != null)
-                RemoveEdges(ref viewChanges.elementsToRemove);
-
-            if (viewChanges.edgesToCreate != null)
-                CreateEdges(ref viewChanges.edgesToCreate);
-
-            if (viewChanges.elementsToRemove != null)
-                RemoveNodeViews(ref viewChanges.elementsToRemove);
-            
-            return viewChanges;
-        }
-        
-        protected virtual void MoveNodeViews(ref List<GraphElement> elementsToMove, Vector2 movementDelta)
-        {
-            elementsToMove.RemoveAll(m => m is NodeDrawer nodeView && !nodeView.TryToMove(movementDelta));
-        }
-
-        protected virtual void RemoveEdges(ref List<GraphElement> elementsToRemove)
-        {
-            elementsToRemove.RemoveAll(element =>
-                {
-                    if (element is not Edge edge)
-                        return false;
-                    
-                    var input = Settings.DisplaySettings.OutputsOnRight ? edge.input : edge.output;
-                    var output = Settings.DisplaySettings.OutputsOnRight ? edge.output : edge.input;
-
-                    return input.node is NodeDrawer inputNodeView &&
-                           output.node is NodeDrawer outputNodeView &&
-                           !inputNodeView.InputMap[input]
-                               .TryToDisconnect(outputNodeView.OutputMap[output], edge);
-                }
-            );
-        }
-
-        protected virtual void RemoveNodeViews(ref List<GraphElement> elementsToRemove)
-        {
-            var indexesToRemove = new List<int>();
-            
-            foreach (var element in elementsToRemove)
-            {
-                if (element is not NodeDrawer nodeView)
-                    continue;
-                
-                int index;
-                for (index = 0; index < _nodeViewsInSerializedArrayOrder.Count; index++)
-                {
-                    if (_nodeViewsInSerializedArrayOrder[index] != nodeView) 
-                        continue;
-                    
-                    indexesToRemove.Add(index);
-                    RemoveNodeDrawer(nodeView);
-                    break;
-                }
-            }
-
-            foreach (var nodeIndex in indexesToRemove.OrderByDescending(n => n))
-            {
-                _graphNodes.GetArrayElementAtIndex(nodeIndex).SetValue(null);
-                _graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-                        
-                _graphNodes.DeleteArrayElementAtIndex(nodeIndex);
-                _graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-            }
-
-            if (indexesToRemove.Count > 0)
-                ReassignProperties(indexesToRemove.Min());
-        }
-        
-        protected virtual void CreateEdges(ref List<Edge> edgesToCreate)
-        {
-            edgesToCreate.RemoveAll(edge =>
-                {
-                    var input = Settings.DisplaySettings.OutputsOnRight ? edge.input : edge.output;
-                    var output = Settings.DisplaySettings.OutputsOnRight ? edge.output : edge.input;
-
-                    return input.node is NodeDrawer inputNodeView &&
-                           output.node is NodeDrawer outputNodeView &&
-                           !inputNodeView.InputMap[input]
-                               .TryToConnect(outputNodeView.OutputMap[output], edge);
-                }
-            );
-        }
-        
-        private void ReassignProperties(int startingIndex = 0)
-        {
-            for (var index = startingIndex; index < _nodeViewsInSerializedArrayOrder.Count; index++)
-            {
-                var node = _nodeViewsInSerializedArrayOrder[index];
-                node.ReassignProperty(_graphNodes.GetArrayElementAtIndex(index));
-            }
         }
     }
 }

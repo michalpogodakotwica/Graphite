@@ -1,25 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Editor.GraphDrawer.OutputDrawers;
-using Graphite.Runtime;
-using Graphite.Runtime.Ports;
+using com.michalpogodakotwica.graphite;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
+using com.michalpogodakotwica.graphite.Editor.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
 
-namespace Graphite.Editor.GraphDrawer.InputDrawers.OrderedMultiInputDrawer
+namespace ReferenceGraph.Editor.Input
 {
-    [CustomInputDrawer(typeof(MultiInput))]
-    public class OrderedMultiInputDrawer : InputDrawer
+    [CustomInputDrawer(typeof(IListInput))]
+    public class OrderedMultiInputDrawer : com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers.InputDrawer
     {
-        private readonly MultiInput _content;
+        private readonly IListInput _content;
         
         private readonly List<ElementPort> _ports = new();
         private Port _addPort;
         
         private SerializedProperty _connectionsProperty;
 
-        public OrderedMultiInputDrawer(MultiInput content, NodeDrawer parent, SerializedProperty inputProperty) : base(content, parent, inputProperty)
+        public OrderedMultiInputDrawer(IListInput content, NodeDrawer parent, SerializedProperty inputProperty) : base(content, parent, inputProperty)
         {
             _content = content;
             _connectionsProperty = inputProperty.FindPropertyRelative("Connections");
@@ -33,7 +36,7 @@ namespace Graphite.Editor.GraphDrawer.InputDrawers.OrderedMultiInputDrawer
 
         public override void DrawPorts()
         {
-            foreach (var unused in ((IInput)_content).Connections)
+            foreach (var unused in _content.Connections)
             {
                 var port = ElementPort.Create<Edge>(Orientation.Horizontal, PortDirection, Port.Capacity.Single, _content.Type, this);
 
@@ -62,7 +65,7 @@ namespace Graphite.Editor.GraphDrawer.InputDrawers.OrderedMultiInputDrawer
         
         public override void DrawConnections()
         {
-            var currentConnections = ((IInput)_content).Connections.ToArray();
+            var currentConnections = _content.Connections.ToArray();
             for (var index = 0; index < currentConnections.Length; index++)
             {
                 var connection = currentConnections[index];
@@ -181,7 +184,7 @@ namespace Graphite.Editor.GraphDrawer.InputDrawers.OrderedMultiInputDrawer
             _connectionsProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
         
-        private void AssignToPropertyAtIndex(int index, Output value)
+        private void AssignToPropertyAtIndex(int index, IOutput value)
         {
             _connectionsProperty.GetArrayElementAtIndex(index).managedReferenceValue = value;
             _connectionsProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
@@ -232,5 +235,66 @@ namespace Graphite.Editor.GraphDrawer.InputDrawers.OrderedMultiInputDrawer
         }
         
         public string ElementName => InputProperty.displayName.TrimEnd('s');
+    }
+    
+    public class ElementPort : Port
+    {
+        private readonly OrderedMultiInputDrawer _inputDrawer;
+
+        private int _portIndex;
+
+        public int PortIndex
+        {
+            get => _portIndex;
+            internal set
+            {
+                _portIndex = value;
+                portName = _inputDrawer.ElementName + " " + (value + 1);
+            }
+        }
+
+        private ElementPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type, OrderedMultiInputDrawer inputDrawer) 
+            : base(portOrientation, portDirection, portCapacity, type)
+        {
+            _inputDrawer = inputDrawer;
+        }
+
+        public override void Connect(Edge edge)
+        {
+            var input = _inputDrawer.GraphViewSettings.DisplaySettings.OutputsOnRight ? edge.input : edge.output;
+            var output = _inputDrawer.GraphViewSettings.DisplaySettings.OutputsOnRight ? edge.output : edge.input;
+            
+            if (input.node == null && output.node is NodeDrawer outputNodeView)
+            {
+                var outputDrawer = outputNodeView.OutputMap[output];
+                
+                output.Disconnect(edge);
+                input.Disconnect(edge);
+                outputDrawer.Parent.Parent.RemoveElement(edge);
+                
+                _inputDrawer.OnElementPortConnected(PortIndex, outputDrawer);
+                
+                base.Connect(edge);
+            }
+            else
+                base.Connect(edge);
+        }
+
+        public static ElementPort Create<TEdge>(
+            Orientation orientation,
+            Direction direction,
+            Capacity capacity,
+            Type type,
+            OrderedMultiInputDrawer inputDrawer)
+            where TEdge : Edge, new()
+        {
+            var connectorListener = new DefaultEdgeConnectorListener();
+            var port = new ElementPort(orientation, direction, capacity, type, inputDrawer)
+            {
+                m_EdgeConnector = new EdgeConnector<TEdge>(connectorListener)
+            };
+            port.AddManipulator(port.m_EdgeConnector);
+            return port;
+        }
     }
 }

@@ -1,18 +1,18 @@
-﻿using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Editor.GraphDrawer.OutputDrawers;
-using Graphite.Runtime.Ports;
+﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 
-namespace Graphite.Editor.GraphDrawer.InputDrawers.SingleInputDrawer
+namespace ReferenceGraph.Editor.Input
 {
-    [CustomInputDrawer(typeof(SingleInput))]
-    public class SingleInputDrawer : InputDrawer
+    [CustomInputDrawer(typeof(ISingleInput))]
+    public class InputDrawer : com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers.InputDrawer
     {
         private readonly Port _port;
-        private readonly SingleInput _content;
+        private readonly ISingleInput _content;
         
-        public SingleInputDrawer(SingleInput content, NodeDrawer parent, SerializedProperty inputProperty) 
+        public InputDrawer(ISingleInput content, NodeDrawer parent, SerializedProperty inputProperty) 
             : base(content, parent, inputProperty)
         {
             _content = content;
@@ -40,7 +40,7 @@ namespace Graphite.Editor.GraphDrawer.InputDrawers.SingleInputDrawer
         
         public override void DrawConnections()
         {
-            var connection = _content.GetConnection();
+            var connection = _content.Connection;
             if (connection != null)
             {
                 DrawConnection(Parent.Parent.OutputsMapping[connection]);   

@@ -1,7 +1,6 @@
 ﻿using System;
-using Graphite.Runtime;
 
-namespace Graphite.Editor.CreateNodeSearchWindowProvider
+namespace com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider
 {
     public readonly struct CreateNodeEntry
     {

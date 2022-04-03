@@ -1,7 +1,7 @@
-﻿using Graphite.Editor.GraphDrawer.NodeDrawers;
+﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.NodeInspector
+namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 {
     public interface INodeInspector
     {
