@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
 using com.michalpogodakotwica.graphite.Editor.SerializationBackend;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
@@ -23,7 +22,6 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
         private readonly CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider _createNodeSearchWindowProviderProvider;
         
         public readonly List<NodeDrawer> NodeDrawers = new ();
-        public readonly Dictionary<IOutput, OutputDrawer> OutputsMapping = new();
         protected IGraphSerializationBackend GraphSerializationBackend;
 
         public GraphDrawer(GraphEditorWindow editorWindow)

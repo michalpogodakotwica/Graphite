@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 {
     public abstract class OutputDrawer
     {
@@ -36,6 +36,8 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers
 
         public abstract void DrawPort();
         public abstract void ClearPort();
+        public abstract void AddPort();
+        public abstract void RemovePort();
 
         protected NodeViewSettings NodeViewSettings => Parent.NodeViewSettings;
         protected GraphViewSettings GraphViewSettings => Parent.GraphViewSettings;

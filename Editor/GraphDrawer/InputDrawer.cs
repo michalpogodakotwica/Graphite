@@ -1,11 +1,10 @@
 ﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 {
     public abstract class InputDrawer
     {

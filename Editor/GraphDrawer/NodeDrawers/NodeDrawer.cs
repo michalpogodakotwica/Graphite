@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -158,7 +156,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
                     ContentSerializedProperty.FindPropertyRelative(outputField.Name)
                 );
                 
-                Parent.OutputsMapping.Add(outputContent, drawer);
+                drawer.AddPort();
                 OutputDrawers.Add((outputField, drawer));
                 drawer.DrawPort();
             }
@@ -178,7 +176,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
             foreach (var outputView in OutputDrawers)
             {
                 outputView.Item2.ClearPort();
-                Parent.OutputsMapping.Remove(outputView.Item2.Content);
+                outputView.Item2.RemovePort();
             }
             OutputDrawers.Clear();
         }

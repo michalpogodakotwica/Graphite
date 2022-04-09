@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using com.michalpogodakotwica.graphite;
 using UnityEngine;
 
-namespace ReferenceGraph
+namespace com.michalpogodakotwica.graphite.ReferenceGraph.Runtime
 {
     public interface IListInput : IInput
     {

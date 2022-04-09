@@ -1,10 +1,14 @@
 ﻿using System;
+using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Runtime
+namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
 {
     [Serializable]
     public class Output : IOutput
     {
+        [SerializeField] 
+        private string _guid = Guid.NewGuid().ToString();
+        
         public void Initialize<T>(Func<T> getValue)
         {
             GetValue = () => getValue.Invoke();
@@ -14,5 +18,6 @@ namespace com.michalpogodakotwica.graphite.ReferenceGraph.Runtime
         public Type Type { get; private set; }
         public Func<object> GetValue { get; set; }
         object IOutput.Value => GetValue.Invoke();
+        public Guid Guid => Guid.Parse(_guid);
     }
 }

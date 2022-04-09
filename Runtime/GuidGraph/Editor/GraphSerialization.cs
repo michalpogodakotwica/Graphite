@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
+namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 {
     public class GraphSerialization : IGraphSerializationBackend
     {
@@ -33,7 +33,7 @@ namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
             for (var i = 0; i < graphNodes.arraySize; i++)
             {
                 var nodeProperty = graphNodes.GetArrayElementAtIndex(i);
-                var node = (Runtime.INode)nodeProperty.GetValue();
+                var node = (global::com.michalpogodakotwica.graphite.GuidGraph.Runtime.INode)nodeProperty.GetValue();
                 node.Initialize();
                 yield return (nodeProperty, node);
             }
@@ -70,7 +70,7 @@ namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
                 graphNodes.arraySize++;
                 graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
-                var casted = (Runtime.INode) node;
+                var casted = (global::com.michalpogodakotwica.graphite.GuidGraph.Runtime.INode) node;
                 casted.Initialize();
                 
                 graphNodes.GetArrayElementAtIndex(size).managedReferenceValue = node;

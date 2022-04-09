@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using com.michalpogodakotwica.graphite;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
+using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
 using com.michalpogodakotwica.graphite.Editor.Utils;
+using com.michalpogodakotwica.graphite.ReferenceGraph.Runtime;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
-namespace ReferenceGraph.Editor.Input
+namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
 {
     [CustomInputDrawer(typeof(IListInput))]
-    public class OrderedMultiInputDrawer : com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers.InputDrawer
+    public class ListInputDrawer : global::com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawer
     {
         private readonly IListInput _content;
         
@@ -22,7 +22,7 @@ namespace ReferenceGraph.Editor.Input
         
         private SerializedProperty _connectionsProperty;
 
-        public OrderedMultiInputDrawer(IListInput content, NodeDrawer parent, SerializedProperty inputProperty) : base(content, parent, inputProperty)
+        public ListInputDrawer(IListInput content, NodeDrawer parent, SerializedProperty inputProperty) : base(content, parent, inputProperty)
         {
             _content = content;
             _connectionsProperty = inputProperty.FindPropertyRelative("Connections");
@@ -69,7 +69,7 @@ namespace ReferenceGraph.Editor.Input
             for (var index = 0; index < currentConnections.Length; index++)
             {
                 var connection = currentConnections[index];
-                DrawConnection(_ports[index], Parent.Parent.OutputsMapping[connection]);
+                DrawConnection(_ports[index], ((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);
             }
         }
 
@@ -239,7 +239,7 @@ namespace ReferenceGraph.Editor.Input
     
     public class ElementPort : Port
     {
-        private readonly OrderedMultiInputDrawer _inputDrawer;
+        private readonly ListInputDrawer _inputDrawer;
 
         private int _portIndex;
 
@@ -253,7 +253,7 @@ namespace ReferenceGraph.Editor.Input
             }
         }
 
-        private ElementPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type, OrderedMultiInputDrawer inputDrawer) 
+        private ElementPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type, ListInputDrawer inputDrawer) 
             : base(portOrientation, portDirection, portCapacity, type)
         {
             _inputDrawer = inputDrawer;
@@ -285,7 +285,7 @@ namespace ReferenceGraph.Editor.Input
             Direction direction,
             Capacity capacity,
             Type type,
-            OrderedMultiInputDrawer inputDrawer)
+            ListInputDrawer inputDrawer)
             where TEdge : Edge, new()
         {
             var connectorListener = new DefaultEdgeConnectorListener();

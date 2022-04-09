@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Runtime
+namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
 {
     [Serializable]
 #if ODIN_INSPECTOR

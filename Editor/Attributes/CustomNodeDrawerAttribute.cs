@@ -1,7 +1,7 @@
 ﻿using System;
 using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
 
-namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
+namespace com.michalpogodakotwica.graphite.Editor.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class CustomNodeDrawerAttribute : CustomDrawerAttribute

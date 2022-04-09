@@ -1,13 +1,14 @@
-﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers;
+﻿using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.OutputDrawers;
+using com.michalpogodakotwica.graphite.ReferenceGraph.Runtime;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 
-namespace ReferenceGraph.Editor.Input
+namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
 {
     [CustomInputDrawer(typeof(ISingleInput))]
-    public class InputDrawer : com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawers.InputDrawer
+    public class InputDrawer : global::com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawer
     {
         private readonly Port _port;
         private readonly ISingleInput _content;
@@ -43,7 +44,7 @@ namespace ReferenceGraph.Editor.Input
             var connection = _content.Connection;
             if (connection != null)
             {
-                DrawConnection(Parent.Parent.OutputsMapping[connection]);   
+                DrawConnection(((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);   
             }
         }
 
