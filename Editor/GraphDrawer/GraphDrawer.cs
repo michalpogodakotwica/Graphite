@@ -11,13 +11,13 @@ using UnityEngine.UIElements;
 
 namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 {
+    [Serializable]
     public abstract class GraphDrawer : GraphView, IDisposable
     {
         public readonly GraphViewSettings Settings;
         public readonly GraphEditorWindow EditorWindow;
-        
-        public SerializedProperty GraphProperty { get; }
-        private readonly IGraph _graph;
+
+        public SerializedProperty GraphProperty => EditorWindow.GraphProperty;
 
         private readonly CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider _createNodeSearchWindowProviderProvider;
         
@@ -26,8 +26,6 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 
         public GraphDrawer(GraphEditorWindow editorWindow)
         {
-            GraphProperty = editorWindow.GraphProperty;
-            _graph = editorWindow.Graph;
             Settings = editorWindow.ViewSettings;
 
             EditorWindow = editorWindow;

@@ -38,7 +38,7 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         protected virtual void OpenGraphProperty(SerializedProperty property)
         {
-            GraphEditorWindow.OpenGraphViewForProperty<GraphEditorWindow>(
+            GraphEditorWindow.OpenGraphWindowForProperty<GraphEditorWindow>(
                 property.serializedObject.targetObject,
                 property.propertyPath
             );

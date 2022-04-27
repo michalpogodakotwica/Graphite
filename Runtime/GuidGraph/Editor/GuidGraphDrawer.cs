@@ -7,11 +7,12 @@ using com.michalpogodakotwica.graphite.GuidGraph.Runtime;
 
 namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 {
+    [Serializable]
     [CustomGraphDrawer(typeof(Graph))]
     public class GuidGraphDrawer : GraphDrawer
     {
         public readonly Dictionary<Guid, OutputDrawer> OutputsMapping = new();
-        
+
         public GuidGraphDrawer(GraphEditorWindow editorWindow) : base(editorWindow)
         {
             GraphSerializationBackend = new GraphSerialization();

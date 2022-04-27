@@ -3,8 +3,8 @@
     "rootNamespace": "",
     "references": [
         "AdjacencyReferenceGraph",
-        "UnityGraph",
-        "Graphite.Editor"
+        "Graphite.Editor",
+        "Graphite"
     ],
     "includePlatforms": [
         "Editor"

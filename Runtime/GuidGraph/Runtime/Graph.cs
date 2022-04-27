@@ -1,44 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Newtonsoft.Json;
 
 namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
 {
     [Serializable]
-#if ODIN_INSPECTOR
-    [DrawWithUnity]
-#endif
     public class Graph : IGraph
     {
-        [SerializeReference]
-        private List<INode> _nodes;
-
-        private bool _wasInitialized;
-
-        public Graph(List<INode> nodes)
+        public static readonly JsonSerializerSettings Settings = new()
         {
-            _nodes = nodes;
-        }
+            ContractResolver = new GraphContractResolver(),
+            TypeNameHandling = TypeNameHandling.Objects
+        };
 
-        private void Initialize()
+        public string GraphData;
+        private List<INode> _nodes = new List<INode>();
+        
+        public void Initialize()
         {
-            if (_wasInitialized)
-                return;
+            _nodes = JsonConvert.DeserializeObject<List<INode>>(GraphData, Settings) ?? new List<INode>();
 
-            _nodes ??= new List<INode>();
-
-            _wasInitialized = true;
             foreach (var node in _nodes)
                 node.Initialize();
         }
 
-        public IEnumerable<INode> Nodes()
+        public List<INode> Nodes
         {
-            return _nodes;
+            get
+            {
+                Initialize();
+                return _nodes;
+            }
         }
-
+        
         public IEnumerator<INode> GetEnumerator()
         {
+            Initialize();
             return _nodes.GetEnumerator();
         }
     }

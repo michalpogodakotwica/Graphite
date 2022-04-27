@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using com.michalpogodakotwica.graphite;
 using com.michalpogodakotwica.graphite.Attributes;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.Settings;

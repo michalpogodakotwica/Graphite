@@ -16,8 +16,7 @@ namespace com.michalpogodakotwica.graphite.Editor
     /// Parent for graph view. Serializes property path to graph and reopens editor on Unity restart.
     public class GraphEditorWindow : EditorWindow, ISerializationCallbackReceiver
     {
-        private static readonly DrawerTypeMapping<IGraph, GraphDrawer.GraphDrawer, CustomGraphDrawerAttribute>
-            GraphDrawerMapping = new();     
+        private static readonly DrawerTypeMapping<IGraph, GraphDrawer.GraphDrawer, CustomGraphDrawerAttribute> GraphDrawerMapping = new();
 
         [SerializeField, HideInInspector]
         private Object _graphPropertySerializationRoot;
@@ -35,31 +34,41 @@ namespace com.michalpogodakotwica.graphite.Editor
         public GraphDrawer.GraphDrawer GraphDrawer { get; private set; }
         public SerializedProperty GraphProperty { get; private set; }
         public GraphViewSettings ViewSettings { get; private set; }
-
-        private void OnEnable()
+        
+        public static void OpenGraphWindowForProperty<T>(Object serializationRoot, string graphPropertyPath) where T : GraphEditorWindow
         {
-            if (GraphDrawer != null)
+            if (TryGetOpenedGraphEditorWindowWithContent<T>(serializationRoot, graphPropertyPath, out var openedWindow))
+            {
+                openedWindow.Focus();
                 return;
+            }
             
-            if (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null)
-                LoadSceneSerializationRoot();
-            
-            LoadGraph();
+            var window = OpenNewGraphEditorWindow<T>();
+            window._graphPropertyPath = graphPropertyPath;
+            window._graphPropertySerializationRoot = serializationRoot;
+            window.InitializeGraphDrawer();
+            window.Focus();
         }
-
-        private void OnInspectorUpdate()
+        
+        protected virtual void OnEnable()
+        {
+            if (GraphDrawer == null)
+                InitializeGraphDrawer();
+        }
+        
+        protected virtual void OnInspectorUpdate()
         {
             if (_graphPropertySerializationRoot == null)
                 Close();
         }
 
-        private void OnFocus()
+        protected virtual void OnFocus()
         {
             GraphDrawer?.Focus();
             GraphDrawer?.SetEnabled(true);
         }
 
-        public void OnBeforeSerialize()
+        public virtual void OnBeforeSerialize()
         {
             var isSerializationRootPrefab =
                 PrefabUtility.GetCorrespondingObjectFromSource(_graphPropertySerializationRoot);
@@ -69,132 +78,17 @@ namespace com.michalpogodakotwica.graphite.Editor
             else
                 ResetSceneSerializationRootData();
         }
-
-        public void OnAfterDeserialize()
+        
+        public virtual void OnAfterDeserialize()
         {
         }
         
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
-            GraphDrawer?.Dispose();
-            GraphDrawer?.RemoveFromHierarchy();
-            GraphDrawer = null;
+            ClearGraphDrawer();
         }
         
-        private void LoadSceneSerializationRoot()
-        {
-            try
-            {
-                var gameObject = GameObject.Find(_sceneGraphOwnerComponentPath);
-                var type = Type.GetType(_sceneGraphOwnerComponentType);
-                _graphPropertySerializationRoot = gameObject.GetComponents(type)[_sceneGraphOwnerComponentIndex];
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        private void SaveSceneSerializationRootData(Component component)
-        {
-            try
-            {
-                _sceneGraphOwnerComponentPath = GetPath(component.transform);
-                _sceneGraphOwnerComponentType = component.GetType().AssemblyQualifiedName;
-
-                var components = component.transform.GetComponents(_graphPropertySerializationRoot.GetType());
-                _sceneGraphOwnerComponentIndex = Array.IndexOf(components, component);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-        }
-
-        private void ResetSceneSerializationRootData()
-        {
-            _sceneGraphOwnerComponentPath = null;
-            _sceneGraphOwnerComponentType = null;
-            _sceneGraphOwnerComponentIndex = -1;
-        }
-        
-        private static string GetPath(Transform current) 
-        {
-            if (current.parent == null)
-                return "/" + current.name;
-            
-            return GetPath(current.parent) + "/" + current.name;
-        }
-        
-        private void LoadGraph(SerializedProperty graphProperty = null)
-        {
-            if (graphProperty == null)
-            {
-                if (!TryGetSerializedProperty(_graphPropertySerializationRoot, _graphPropertyPath, out graphProperty)) 
-                    return;
-            }
-
-            GraphProperty = graphProperty;
-            
-            var graph = (IGraph)GraphProperty?.GetValue();
-            if (graph == null)
-                return;
-            
-            Graph = graph;
-            if (GraphDrawer != null)
-                rootVisualElement.Remove(GraphDrawer);
-
-            ViewSettings = GetGraphEditorSettings();
-            GraphDrawer = CreateGraphView(graph);
-        }
-
-        protected virtual GraphDrawer.GraphDrawer CreateGraphView(IGraph graph)
-        {
-            var graphDrawerType = GraphDrawerMapping.GetDrawerForType(graph.GetType());
-
-            GraphDrawer = (GraphDrawer.GraphDrawer)Activator.CreateInstance(
-                graphDrawerType,
-                new object[] { this }
-            );
-            
-            titleContent = new GUIContent(ViewSettings.DisplaySettings.Title);
-            rootVisualElement.Add(GraphDrawer);
-            GraphDrawer.StretchToParentSize();
-            GraphDrawer.RedrawGraph();
-            
-            return GraphDrawer;
-        }
-
-        protected virtual GraphViewSettings GetGraphEditorSettings()
-        {
-            var graphDrawingSettingsAttribute =
-                GraphProperty.GetFieldInfo().GetCustomAttribute<GraphViewSettingsAttribute>();
-            
-            return graphDrawingSettingsAttribute != null
-                ? new GraphViewSettings(graphDrawingSettingsAttribute)
-                : new GraphViewSettings();
-        }
-        
-        public static void OpenGraphViewForProperty<T>(Object serializationRoot, string graphPropertyPath) where T : GraphEditorWindow
-        {
-            if (TryGetOpenedGraphEditorWindowWithContent<T>(serializationRoot, graphPropertyPath, out var openedWindow))
-            {
-                openedWindow.Focus();
-                return;
-            }
-            
-            var window = OpenNewGraphEditorWindow<T>();
-            
-            window._graphPropertyPath = graphPropertyPath;
-            window._graphPropertySerializationRoot = serializationRoot;
-
-            window.GraphDrawer = null;
-            
-            window.LoadGraph();
-            window.Focus();
-        }
-
-        private static bool TryGetOpenedGraphEditorWindowWithContent<T>(Object serializationRoot, string propertyPath, out T editorWindow) where T : GraphEditorWindow
+        protected static bool TryGetOpenedGraphEditorWindowWithContent<T>(Object serializationRoot, string propertyPath, out T editorWindow) where T : GraphEditorWindow
         {
             var openedEditors = GetOpenedGraphEditorWindows<T>();
 
@@ -214,18 +108,90 @@ namespace com.michalpogodakotwica.graphite.Editor
             return false;
         }
 
-        private static T OpenNewGraphEditorWindow<T>() where T : GraphEditorWindow
+        protected static T OpenNewGraphEditorWindow<T>() where T : GraphEditorWindow
         {
             return CreateWindow<T>(typeof(T));
         }
 
-        private static IEnumerable<T> GetOpenedGraphEditorWindows<T>() where T : GraphEditorWindow
+        protected static IEnumerable<T> GetOpenedGraphEditorWindows<T>() where T : GraphEditorWindow
         {
             return Resources.FindObjectsOfTypeAll<T>();
         }
+
+        private void InitializeGraphDrawer()
+        {
+            if (GraphProperty == null)
+            {
+                LoadGraphProperty();
+                if (GraphProperty == null)
+                    return;
+                
+                OnGraphPropertyLoaded();
+            }
+
+            if (Graph == null)
+            {
+                LoadGraphFromProperty();
+                
+                if (Graph == null)
+                    return;
+
+                OnGraphLoadedFromProperty();
+            }
+
+            if (ViewSettings == null)
+            {
+                LoadGraphSettings();
+                
+                if (ViewSettings == null)
+                    return;
+                
+                OnGraphSettingsLoaded();
+            }
+            
+            if (GraphDrawer == null)
+            {
+                CreateGraphDrawerFromGraph();
+                
+                if (GraphDrawer == null)
+                    return;
+
+                OnGraphDrawerCreated();
+            }
+            
+            DrawGraph();
+        }
+
+        private void LoadGraphProperty()
+        {
+            if (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null)
+                LoadSceneSerializationRoot();
+            
+            if (!TryGetSerializedProperty(_graphPropertySerializationRoot, _graphPropertyPath, out var graphProperty))
+                return;
+            
+            GraphProperty = graphProperty;
+        }
         
+        protected virtual void OnGraphPropertyLoaded()
+        {
+        }
+
+        protected void LoadSceneSerializationRoot()
+        {
+            try
+            {
+                var gameObject = GameObject.Find(_sceneGraphOwnerComponentPath);
+                var type = Type.GetType(_sceneGraphOwnerComponentType);
+                _graphPropertySerializationRoot = gameObject.GetComponents(type)[_sceneGraphOwnerComponentIndex];
+            }
+            catch
+            {
+                // ignored
+            }
+        }
         
-        private bool TryGetSerializedProperty(Object serializationRoot, string graphPropertyPath, out SerializedProperty serializedProperty)
+        protected bool TryGetSerializedProperty(Object serializationRoot, string graphPropertyPath, out SerializedProperty serializedProperty)
         {
             if (serializationRoot == null || string.IsNullOrWhiteSpace(graphPropertyPath))
             {
@@ -237,6 +203,108 @@ namespace com.michalpogodakotwica.graphite.Editor
             serializedProperty = serializedObject.FindProperty(_graphPropertyPath);
             return serializedProperty != null;
         }
+        
+        private void LoadGraphFromProperty()
+        {
+            var graph = (IGraph)GraphProperty?.GetValue();
+            Graph = graph;
+        }
+
+        protected virtual void OnGraphLoadedFromProperty()
+        {
+        }
+        
+        private void LoadGraphSettings()
+        {
+            ViewSettings = GetGraphEditorSettings();
+        }
+
+        protected virtual GraphViewSettings GetGraphEditorSettings()
+        {
+            var graphDrawingSettingsAttribute =
+                GraphProperty.GetFieldInfo().GetCustomAttribute<GraphViewSettingsAttribute>();
+            
+            return graphDrawingSettingsAttribute != null
+                ? new GraphViewSettings(graphDrawingSettingsAttribute)
+                : new GraphViewSettings();
+        }        
+        
+        protected virtual void OnGraphSettingsLoaded()
+        {
+            titleContent = new GUIContent(ViewSettings.DisplaySettings.Title);
+        }
+        
+        private void CreateGraphDrawerFromGraph()
+        {
+            GraphDrawer = CreateGraphDrawer(Graph);
+        }
+        
+        protected virtual void OnGraphDrawerCreated()
+        {
+            rootVisualElement.Add(GraphDrawer);
+            GraphDrawer.StretchToParentSize();
+        }
+        
+        protected virtual GraphDrawer.GraphDrawer CreateGraphDrawer(IGraph graph)
+        {
+            var graphDrawerType = GraphDrawerMapping.GetDrawerForType(graph.GetType());
+            var graphDrawer = (GraphDrawer.GraphDrawer)Activator.CreateInstance(
+                graphDrawerType,
+                new object[] { this }
+            );
+            
+            return graphDrawer;
+        }
+        
+        protected virtual void DrawGraph()
+        {
+            GraphDrawer.RedrawGraph();
+        }
+        
+        protected void ResetSceneSerializationRootData()
+        {
+            _sceneGraphOwnerComponentPath = null;
+            _sceneGraphOwnerComponentType = null;
+            _sceneGraphOwnerComponentIndex = -1;
+        }
+        
+        protected void SaveSceneSerializationRootData(Component component)
+        {
+            try
+            {
+                _sceneGraphOwnerComponentPath = GetTransformPath(component.transform);
+                _sceneGraphOwnerComponentType = component.GetType().AssemblyQualifiedName;
+
+                var components = component.transform.GetComponents(_graphPropertySerializationRoot.GetType());
+                _sceneGraphOwnerComponentIndex = Array.IndexOf(components, component);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+        }
+
+        protected static string GetTransformPath(Transform current) 
+        {
+            if (current.parent == null)
+                return "/" + current.name;
+            
+            return GetTransformPath(current.parent) + "/" + current.name;
+        }
+        
+        private void ClearGraphDrawer()
+        {
+            if (GraphDrawer == null)
+                return;
+            
+            GraphDrawer.Dispose();
+            GraphDrawer.RemoveFromHierarchy();
+            GraphDrawer = null;
+            OnGraphDrawerCleared();
+        }
+
+        protected virtual void OnGraphDrawerCleared()
+        {
+        }
     }
 }
-

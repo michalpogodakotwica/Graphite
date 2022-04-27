@@ -10,7 +10,7 @@ namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
 {
 	public class DefaultCopyPasteHandler : ICopyPasteHandler
 	{
-		private static readonly JsonSerializerSettings Settings = new()
+		public static readonly JsonSerializerSettings Settings = new()
 		{
 			ContractResolver = new UnitySerializationResemblingJsonContractResolver(),
 			TypeNameHandling = TypeNameHandling.Objects

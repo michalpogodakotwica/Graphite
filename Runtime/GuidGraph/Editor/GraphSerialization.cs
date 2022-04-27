@@ -16,7 +16,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         private void ModifyWithUndo(GraphDrawer graphDrawer,
             Action applyModification)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
             graphNodes.serializedObject.Update();
             Undo.RecordObject(graphNodes.serializedObject.targetObject, $"Graph changes");
             applyModification();
@@ -27,7 +28,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         public IEnumerable<(SerializedProperty, INode)> GetAllNodes(
             GraphDrawer graphDrawer)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
             graphNodes.serializedObject.Update();
 
             for (var i = 0; i < graphNodes.arraySize; i++)
@@ -61,7 +63,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             GraphDrawer graphDrawer,
             List<INode> nodesToAdd)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
             var result = new List<(SerializedProperty, INode)>();
 
             foreach (var node in nodesToAdd)
@@ -148,8 +151,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         private void RemoveNodeViews(GraphDrawer graphDrawer,
             ref List<GraphElement> elementsToRemove)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
-
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
             var indexesToRemove = new List<int>();
 
             foreach (var element in elementsToRemove)
@@ -184,7 +187,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         private void ReassignProperties(GraphDrawer graphDrawer,
             int startingIndex = 0)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
             for (var index = startingIndex; index < graphDrawer.NodeDrawers.Count; index++)
             {
                 var node = graphDrawer.NodeDrawers[index];
