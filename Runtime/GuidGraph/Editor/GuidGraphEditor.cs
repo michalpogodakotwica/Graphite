@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using com.michalpogodakotwica.graphite.Editor;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -10,7 +11,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 {
     public class GuidGraphEditor : GraphEditorWindow
     {
-        [SerializeReference] 
+        [SerializeReference]
         private List<GuidGraph.Runtime.INode> _nodes = new();
 
         private Toolbar _toolbar;
@@ -39,17 +40,23 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             _toolbar = new Toolbar();
             root.Add(_toolbar);
 
-            var saveButton = new Button(Save)
+            var exportButton = new Button(Export)
             {
-                text = "Save"
+                text = "Export (Save)"
             };
-            _toolbar.Add(saveButton);
+            _toolbar.Add(exportButton);
             
-            var loadButton = new Button(Load)
+            var importButton = new Button(Import)
             {
-                text = "Load"
+                text = "Import (Reload)"
             };
-            _toolbar.Add(loadButton);
+            _toolbar.Add(importButton);
+            
+            var inspect = new Button(() => Selection.activeObject = this)
+            {
+                text = "Inspect"
+            };
+            _toolbar.Add(inspect);
         }
 
         private void ClearToolbar()
@@ -57,7 +64,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             _toolbar.RemoveFromHierarchy();
         }
         
-        private void Save()
+        private void Export()
         {
             var serializedNodes = JsonConvert.SerializeObject(_nodes, Formatting.Indented, Runtime.Graph.Settings);
             GraphProperty.FindPropertyRelative("GraphData").stringValue = serializedNodes;
@@ -65,21 +72,21 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             GraphProperty.serializedObject.ApplyModifiedProperties();
         }
         
+        private void Import()
+        {
+            Load();
+            RedrawGraph();
+        }
+
         private void Load()
         {
             var castedGraph = (GuidGraph.Runtime.Graph)Graph;
-            castedGraph.Initialize();
-            LoadFromRuntimeValue(castedGraph.Nodes);
-        }
 
-        private void LoadFromStringData(string nodesSerializedData)
-        {
-            _nodes = JsonConvert.DeserializeObject<List<GuidGraph.Runtime.INode>>(nodesSerializedData, Runtime.Graph.Settings);
-        }
-        
-        private void LoadFromRuntimeValue(List<GuidGraph.Runtime.INode> nodesSerializedData)
-        {
-            _nodes = nodesSerializedData;
+            _nodes = JsonConvert.DeserializeObject<List<GuidGraph.Runtime.INode>>(castedGraph.GraphData,
+                GuidGraph.Runtime.Graph.Settings) ?? new List<GuidGraph.Runtime.INode>();
+
+            foreach (var node in _nodes)
+                node.Initialize();
         }
     }
 }

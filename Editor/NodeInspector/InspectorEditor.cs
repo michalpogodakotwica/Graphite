@@ -20,6 +20,18 @@ namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 	    private VisualElement _nothingSelectedMessage;
         private VisualElement _mainContainer;
 
+        private void OnEnable()
+        {
+	        Selection.OnNodeSelected += OnNodeSelected;
+	        Selection.OnNodeDeselected += OnNodeDeselected;
+        }
+
+        private void OnDisable()
+        {
+	        Selection.OnNodeSelected -= OnNodeSelected;
+	        Selection.OnNodeDeselected -= OnNodeDeselected;
+        }
+
         public override VisualElement CreateInspectorGUI()
         {
 	        _multiSelectionMessage = new Label("Multi-node editing not supported");
@@ -41,10 +53,7 @@ namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 	        }
 
 	        UpdateContent();
-	        
-	        Selection.OnNodeSelected += OnNodeSelected;
-	        Selection.OnNodeDeselected += OnNodeDeselected;
-	        
+
 	        return _mainContainer;
         }
 
@@ -81,6 +90,9 @@ namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 
         private void UpdateContent()
         {
+	        if(_mainContainer == null)
+		        return;
+
 	        _mainContainer.Clear();
 	        
 	        switch (_inspectors.Count)

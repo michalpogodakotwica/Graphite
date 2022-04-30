@@ -13,16 +13,16 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 {
     public class GraphSerialization : IGraphSerializationBackend
     {
-        private void ModifyWithUndo(GraphDrawer graphDrawer,
-            Action applyModification)
+        private void ModifyWithUndo(GraphDrawer graphDrawer, Action applyModification)
         {
             var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
-            var graphNodes = serializedObject.FindProperty("_nodes");
-            graphNodes.serializedObject.Update();
-            Undo.RecordObject(graphNodes.serializedObject.targetObject, $"Graph changes");
+            Undo.RecordObject(serializedObject.targetObject, $"Graph changes");
+            serializedObject.Update();
+            
             applyModification();
-            EditorUtility.SetDirty(graphNodes.serializedObject.targetObject);
-            graphNodes.serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(serializedObject.targetObject);
+            
+            serializedObject.ApplyModifiedProperties();
         }
 
         public IEnumerable<(SerializedProperty, INode)> GetAllNodes(
@@ -181,18 +181,21 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             }
 
             if (indexesToRemove.Count > 0)
-                ReassignProperties(graphDrawer, indexesToRemove.Min());
+                ReassignProperties(graphDrawer, indexesToRemove);
         }
 
-        private void ReassignProperties(GraphDrawer graphDrawer,
-            int startingIndex = 0)
+        private void ReassignProperties(GraphDrawer graphDrawer, List<int> indexesToRemove)
         {
             var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
             var graphNodes = serializedObject.FindProperty("_nodes");
-            for (var index = startingIndex; index < graphDrawer.NodeDrawers.Count; index++)
+
+            var oldIndexes = Enumerable.Range(0, graphDrawer.NodeDrawers.Count - 1).Except(indexesToRemove).ToArray();
+
+            for (var newIndex = indexesToRemove.Min(); newIndex < oldIndexes.Length; newIndex++)
             {
-                var node = graphDrawer.NodeDrawers[index];
-                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(index));
+                var oldIndex = oldIndexes[newIndex];
+                var node = graphDrawer.NodeDrawers[newIndex];
+                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(oldIndex));
             }
         }
     }

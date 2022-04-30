@@ -159,7 +159,7 @@ namespace com.michalpogodakotwica.graphite.Editor
                 OnGraphDrawerCreated();
             }
             
-            DrawGraph();
+            RedrawGraph();
         }
 
         private void LoadGraphProperty()
@@ -256,7 +256,7 @@ namespace com.michalpogodakotwica.graphite.Editor
             return graphDrawer;
         }
         
-        protected virtual void DrawGraph()
+        protected virtual void RedrawGraph()
         {
             GraphDrawer.RedrawGraph();
         }

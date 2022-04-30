@@ -58,12 +58,14 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         public override bool TryToConnect(OutputDrawer outputDrawer, Edge edge)
         {
             InputProperty.FindPropertyRelative("_guid").stringValue = ((Output)outputDrawer.Content).Guid.ToString();
+            ((Input)Content).Connect((Output)outputDrawer.Content);
             return true;
         }
         
         public override bool TryToDisconnect(OutputDrawer outputDrawer, Edge edge)
         {
             InputProperty.FindPropertyRelative("_guid").stringValue = null;
+            ((Input)Content).Disconnect((Output)outputDrawer.Content);
             return true;
         }
     }
