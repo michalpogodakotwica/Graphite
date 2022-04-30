@@ -1,6 +1,3 @@
-﻿namespace com.michalpogodakotwica.graphite
+﻿public interface IGraph
 {
-    public interface IGraph
-    {
-    }
 }

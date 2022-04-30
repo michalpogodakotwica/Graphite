@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using com.michalpogodakotwica.graphite.Attributes;
+using Attributes;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
 using com.michalpogodakotwica.graphite.Editor.Settings;

@@ -1,9 +1,6 @@
 ﻿using System;
 
-namespace com.michalpogodakotwica.graphite
+public interface IInput
 {
-    public interface IInput
-    {
-        Type Type { get; }
-    }
+    Type Type { get; }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace com.michalpogodakotwica.graphite.Attributes
+namespace Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class NodeTitleAttribute : Attribute

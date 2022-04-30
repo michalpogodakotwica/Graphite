@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
 {
-    public class GraphContractResolver : DefaultContractResolver
+    public class ContractResolver : DefaultContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {

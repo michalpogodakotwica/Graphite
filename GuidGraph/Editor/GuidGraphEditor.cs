@@ -31,7 +31,6 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         protected override void OnGraphLoadedFromProperty()
         {
             base.OnGraphPropertyLoaded();
-            Load();
         }
 
         private void CreateToolbar()
@@ -51,6 +50,19 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
                 text = "Import (Reload)"
             };
             _toolbar.Add(importButton);
+            
+            
+            var loadRuntime = new Button(() =>
+            {
+                var castedGraph = (GuidGraph.Runtime.Graph)Graph;
+                _nodes = castedGraph.Nodes;
+                foreach (var node in _nodes)
+                    node.Initialize();
+            })
+            {
+                text = "Load runtime "
+            };
+            _toolbar.Add(loadRuntime);
             
             var inspect = new Button(() => Selection.activeObject = this)
             {
@@ -74,19 +86,11 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         
         private void Import()
         {
-            Load();
-            RedrawGraph();
-        }
-
-        private void Load()
-        {
             var castedGraph = (GuidGraph.Runtime.Graph)Graph;
-
-            _nodes = JsonConvert.DeserializeObject<List<GuidGraph.Runtime.INode>>(castedGraph.GraphData,
-                GuidGraph.Runtime.Graph.Settings) ?? new List<GuidGraph.Runtime.INode>();
-
-            foreach (var node in _nodes)
-                node.Initialize();
+            castedGraph.Initialize();
+            _nodes = castedGraph.Nodes;
+            
+            RedrawGraph();
         }
     }
 }

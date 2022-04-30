@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Runtime
+namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
 {
     public interface IListInput : IInput
     {

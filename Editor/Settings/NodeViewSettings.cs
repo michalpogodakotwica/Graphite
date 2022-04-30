@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using com.michalpogodakotwica.graphite.Attributes;
+using Attributes;
 using UnityEditor;
 
 namespace com.michalpogodakotwica.graphite.Editor.Settings

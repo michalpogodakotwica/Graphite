@@ -9,7 +9,7 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
+namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
 {
     public class GraphSerialization : IGraphSerializationBackend
     {
@@ -178,17 +178,21 @@ namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
             }
 
             if (indexesToRemove.Count > 0)
-                ReassignProperties(graphDrawer, indexesToRemove.Min());
+                ReassignProperties(graphDrawer, indexesToRemove);
         }
 
-        private void ReassignProperties(GraphDrawer graphDrawer,
-            int startingIndex = 0)
+        private void ReassignProperties(GraphDrawer graphDrawer, List<int> indexesToRemove)
         {
-            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
-            for (var index = startingIndex; index < graphDrawer.NodeDrawers.Count; index++)
+            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
+            var graphNodes = serializedObject.FindProperty("_nodes");
+
+            var oldIndexes = Enumerable.Range(0, graphDrawer.NodeDrawers.Count - 1).Except(indexesToRemove).ToArray();
+
+            for (var newIndex = indexesToRemove.Min(); newIndex < oldIndexes.Length; newIndex++)
             {
-                var node = graphDrawer.NodeDrawers[index];
-                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(index));
+                var oldIndex = oldIndexes[newIndex];
+                var node = graphDrawer.NodeDrawers[newIndex];
+                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(oldIndex));
             }
         }
     }

@@ -9,7 +9,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
     {
         public static readonly JsonSerializerSettings Settings = new()
         {
-            ContractResolver = new GraphContractResolver(),
+            ContractResolver = new ContractResolver(),
             TypeNameHandling = TypeNameHandling.Objects
         };
 
@@ -24,15 +24,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
                 node.Initialize();
         }
 
-        public List<INode> Nodes
-        {
-            get
-            {
-                Initialize();
-                return _nodes;
-            }
-        }
-        
+        public List<INode> Nodes => _nodes;
+
         public IEnumerator<INode> GetEnumerator()
         {
             Initialize();

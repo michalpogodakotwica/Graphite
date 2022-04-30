@@ -2,7 +2,7 @@
 using com.michalpogodakotwica.graphite.Editor;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
+namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
 {
     //[CustomGraphDrawer(typeof(Graph))]
     public class AdjacencyReferenceGraphDrawer : GraphDrawer

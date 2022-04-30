@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using com.michalpogodakotwica.graphite.Attributes;
+using Attributes;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.CompatiblePortsProvider;
 using com.michalpogodakotwica.graphite.Editor.CopyPasteHandler;

@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite
+public interface INode
 {
-    public interface INode
-    {
-        public Vector2 Position { get; set; }
-    }
+    public Vector2 Position { get; set; }
 }

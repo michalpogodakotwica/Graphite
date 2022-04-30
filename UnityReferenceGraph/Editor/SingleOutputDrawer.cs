@@ -3,7 +3,7 @@ using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 
-namespace com.michalpogodakotwica.graphite.ReferenceGraph.Editor
+namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
 {
     [CustomOutputDrawer(typeof(IOutput))]
     public class SingleOutputDrawer : OutputDrawer
