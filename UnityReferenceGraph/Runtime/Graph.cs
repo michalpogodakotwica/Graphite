@@ -34,11 +34,13 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
 
         public IEnumerable<INode> Nodes()
         {
+            Initialize();
             return _nodes;
         }
 
         public IEnumerator<INode> GetEnumerator()
         {
+            Initialize();
             return _nodes.GetEnumerator();
         }
     }
