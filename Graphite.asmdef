@@ -2,7 +2,7 @@
     "name": "Graphite",
     "rootNamespace": "",
     "references": [
-        "GUID:c55d28459d9c4444ebb4788be912e1f1"
+        "Newtonsoft.Json.UnityConverters"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
