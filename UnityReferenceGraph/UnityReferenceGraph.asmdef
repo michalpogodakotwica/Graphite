@@ -1,8 +1,8 @@
 {
-    "name": "AdjacencyReferenceGraph",
+    "name": "UnityReferenceGraph",
     "rootNamespace": "",
     "references": [
-        "GUID:1b45aa9eeaa71d14dad3ef8fcb42212e"
+        "Graphite"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

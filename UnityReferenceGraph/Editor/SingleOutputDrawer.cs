@@ -28,12 +28,12 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
         
         public override void AddPort()
         {
-            ((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping.Add(Content, this);
+            ((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping.Add(Content, this);
         }
 
         public override void RemovePort()
         {
-            ((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping.Remove(Content);
+            ((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping.Remove(Content);
         }
     }
 }

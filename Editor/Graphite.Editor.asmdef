@@ -3,7 +3,6 @@
     "rootNamespace": "",
     "references": [
         "Newtonsoft.Json.UnityConverters",
-        "Newtonsoft.Json.UnityConverters.Editor",
         "Graphite"
     ],
     "includePlatforms": [

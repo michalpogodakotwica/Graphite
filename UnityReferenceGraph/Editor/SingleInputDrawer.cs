@@ -44,7 +44,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             var connection = _content.Connection;
             if (connection != null)
             {
-                DrawConnection(((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);   
+                DrawConnection(((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);   
             }
         }
 

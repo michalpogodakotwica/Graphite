@@ -7,11 +7,11 @@ using com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime;
 namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
 {
     [CustomGraphDrawer(typeof(Graph))]
-    public class AdjacencyReferenceGraphDrawer : GraphDrawer
+    public class UnityReferenceGraphDrawer : GraphDrawer
     {
         public readonly Dictionary<IOutput, OutputDrawer> OutputsMapping = new();
         
-        public AdjacencyReferenceGraphDrawer(GraphEditorWindow editorWindow) : base(editorWindow)
+        public UnityReferenceGraphDrawer(GraphEditorWindow editorWindow) : base(editorWindow)
         {
             GraphSerializationBackend = new GraphSerialization();
         }

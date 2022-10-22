@@ -69,7 +69,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             for (var index = 0; index < currentConnections.Length; index++)
             {
                 var connection = currentConnections[index];
-                DrawConnection(_ports[index], ((AdjacencyReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);
+                DrawConnection(_ports[index], ((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);
             }
         }
 
