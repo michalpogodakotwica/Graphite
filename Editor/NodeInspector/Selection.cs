@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEngine;
 
-namespace Graphite.Editor.NodeInspector
+namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 {
     public static class Selection
     {

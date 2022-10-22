@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.GraphDrawer
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
 {
     public static class Minimap
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Graphite.Runtime.Attributes
+namespace Attributes
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class ShowInNodeAttribute : Attribute

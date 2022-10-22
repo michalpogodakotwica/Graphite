@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Runtime;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.Utils;
 using Newtonsoft.Json;
 using UnityEditor.Experimental.GraphView;
 
-namespace Graphite.Editor.CopyPasteHandler
+namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
 {
 	public class DefaultCopyPasteHandler : ICopyPasteHandler
 	{
-		private static readonly JsonSerializerSettings Settings = new()
+		public static readonly JsonSerializerSettings Settings = new()
 		{
 			ContractResolver = new UnitySerializationResemblingJsonContractResolver(),
 			TypeNameHandling = TypeNameHandling.Objects
@@ -58,15 +58,12 @@ namespace Graphite.Editor.CopyPasteHandler
 			var internalOutputPorts =  nodes.SelectMany(GetAllOutputs).ToArray();
 
 			// stripping outside connections
-			foreach (var inputPort in internalInputPorts)
-			foreach (var connection in inputPort.Connections.ToArray())
+			/*foreach (var inputPort in internalInputPorts)
+			foreach (var connection in inputPort.Connection.ToArray())
 				if(!internalOutputPorts.Contains(connection))
-					inputPort.Disconnect(connection);
+					inputPort.Disconnect(connection);*/
 
-			graphDrawer.ModifyWithUndo(() =>
-			{
-				graphDrawer.AddNodes(nodes);
-			});
+			graphDrawer.AddNodes(nodes);
 		}
 
 		private static IEnumerable<IInput> GetAllInputs(INode node)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Graphite.Runtime.Attributes
+namespace Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class NodeTitleAttribute : Attribute

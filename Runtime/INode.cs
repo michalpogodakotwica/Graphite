@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Graphite.Runtime
+public interface INode
 {
-    public interface INode
-    {
-        void InitializeOutputs();
-        public Vector2 Position { get; set; }
-    }
+    public Vector2 Position { get; set; }
 }

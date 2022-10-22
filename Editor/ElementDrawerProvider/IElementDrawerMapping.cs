@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Graphite.Editor.ElementDrawerProvider
+namespace com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider
 {
     public interface IElementDrawerMapping
     {

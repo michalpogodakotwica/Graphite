@@ -1,10 +1,7 @@
 ﻿using System;
 
-namespace Graphite.Runtime
+public interface IOutput
 {
-    public interface IOutput 
-    {
-        internal object Value { get; }
-        Type Type { get; }
-    }
+    object Value { get; }
+    Type Type { get; }
 }

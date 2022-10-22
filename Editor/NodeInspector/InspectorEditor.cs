@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Graphite.Editor.ElementDrawerProvider;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Runtime;
+using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.NodeInspector
+namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 {
 	[CustomEditor(typeof(NodeInspector))]
     public class InspectorEditor : UnityEditor.Editor
@@ -19,6 +19,18 @@ namespace Graphite.Editor.NodeInspector
 	    private VisualElement _multiSelectionMessage;
 	    private VisualElement _nothingSelectedMessage;
         private VisualElement _mainContainer;
+
+        private void OnEnable()
+        {
+	        Selection.OnNodeSelected += OnNodeSelected;
+	        Selection.OnNodeDeselected += OnNodeDeselected;
+        }
+
+        private void OnDisable()
+        {
+	        Selection.OnNodeSelected -= OnNodeSelected;
+	        Selection.OnNodeDeselected -= OnNodeDeselected;
+        }
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -41,10 +53,7 @@ namespace Graphite.Editor.NodeInspector
 	        }
 
 	        UpdateContent();
-	        
-	        Selection.OnNodeSelected += OnNodeSelected;
-	        Selection.OnNodeDeselected += OnNodeDeselected;
-	        
+
 	        return _mainContainer;
         }
 
@@ -81,6 +90,9 @@ namespace Graphite.Editor.NodeInspector
 
         private void UpdateContent()
         {
+	        if(_mainContainer == null)
+		        return;
+
 	        _mainContainer.Clear();
 	        
 	        switch (_inspectors.Count)

@@ -1,8 +1,8 @@
 {
-    "name": "UnityGraph",
+    "name": "Graphite",
     "rootNamespace": "",
     "references": [
-        "Newtonsoft.Json.UnityConverters"
+        "GUID:c55d28459d9c4444ebb4788be912e1f1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

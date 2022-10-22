@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 
-namespace Graphite.Editor.CompatiblePortsProvider
+namespace com.michalpogodakotwica.graphite.Editor.CompatiblePortsProvider
 {
     public interface ICompatiblePortsProvider
     {

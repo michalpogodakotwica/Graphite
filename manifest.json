@@ -3,16 +3,10 @@
     {
       "name": "Packages from jillejr",
       "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity/",
-      "scopes": [
-        "jillejr"
-      ]
-    },
-    {
-      "name": "jilleJr",
-      "url": "https://npm.cloudsmith.io/jillejr/newtonsoft-json-for-unity",
-      "scopes": [
-        "jillejr.newtonsoft.json-for-unity"
-      ]
+      "scopes": ["jillejr"]
     }
-  ]
+  ],
+  "dependencies": {
+    "jillejr.newtonsoft.json-for-unity.converters": "1.0.0"
+  }
 }

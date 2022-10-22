@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Graphite.Runtime;
 using UnityEngine;
 
-namespace Graphite.Editor.CopyPasteHandler
+namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
 {
     [Serializable]
     public class DefaultCopyPasteGraphData

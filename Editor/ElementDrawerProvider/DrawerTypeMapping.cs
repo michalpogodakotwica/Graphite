@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Graphite.Editor.ElementDrawerProvider
+namespace com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider
 {
     public class DrawerTypeMapping<TContent, TDrawerBaseType, TCustomDrawerAttribute> : IElementDrawerMapping
         where TCustomDrawerAttribute : CustomDrawerAttribute
@@ -64,18 +64,6 @@ namespace Graphite.Editor.ElementDrawerProvider
             }
 
             return null;
-        }
-    }
-    
-    public abstract class CustomDrawerAttribute : Attribute
-    {
-        public Type Target { get; }
-        public bool UseForChildren { get; }
-
-        protected CustomDrawerAttribute(Type target, bool useForChildren = true)
-        {
-            Target = target;
-            UseForChildren = useForChildren;
         }
     }
 }

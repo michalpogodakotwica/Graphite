@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Graphite.Editor.GraphDrawer.InputDrawers;
-using Graphite.Editor.GraphDrawer.OutputDrawers;
-using Graphite.Editor.Settings;
-using Graphite.Runtime;
-using Graphite.Runtime.Ports;
+using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Node = UnityEditor.Experimental.GraphView.Node;
 
-namespace Graphite.Editor.GraphDrawer.NodeDrawers
+namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 {
     public abstract class NodeDrawer : Node
     {
@@ -148,8 +144,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
         
         protected virtual void DrawOutputs()
         {
-            Content.InitializeOutputs();
-            var outputFields = GetFieldsOfType(typeof(Output));
+            var outputFields = GetFieldsOfType(typeof(IOutput));
             foreach (var outputField in outputFields)
             {
                 var outputContent = (IOutput) outputField.GetValue(Content);
@@ -161,7 +156,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
                     ContentSerializedProperty.FindPropertyRelative(outputField.Name)
                 );
                 
-                Parent.OutputsMapping.Add(outputContent, drawer);
+                drawer.AddPort();
                 OutputDrawers.Add((outputField, drawer));
                 drawer.DrawPort();
             }
@@ -181,7 +176,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
             foreach (var outputView in OutputDrawers)
             {
                 outputView.Item2.ClearPort();
-                Parent.OutputsMapping.Remove(outputView.Item2.Content);
+                outputView.Item2.RemovePort();
             }
             OutputDrawers.Clear();
         }

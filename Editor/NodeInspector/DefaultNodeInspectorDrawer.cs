@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Graphite.Editor.GraphDrawer.NodeDrawers;
-using Graphite.Runtime;
+using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Graphite.Editor.NodeInspector
+namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
 {
     [CustomNodeInspectorDrawer(typeof(INode))]
     public class DefaultNodeInspector : INodeInspector
