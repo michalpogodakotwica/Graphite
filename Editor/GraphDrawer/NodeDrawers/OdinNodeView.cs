@@ -1,6 +1,7 @@
 ﻿#if ODIN_INSPECTOR
-using Graphite.Editor.Settings;
-using Graphite.Runtime;
+using com.michalpogodakotwica.graphite.Editor.Attributes;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -9,7 +10,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
 	[CustomNodeDrawer(typeof(INode))]
     public class OdinNodeView : NodeDrawer
     {
-        public OdinNodeView(INode content, GraphDrawer parent, SerializedProperty contentSerializedProperty, NodeViewSettings nodeViewSettings) 
+        public OdinNodeView(INode content, com.michalpogodakotwica.graphite.Editor.GraphDrawer.GraphDrawer parent, SerializedProperty contentSerializedProperty, NodeViewSettings nodeViewSettings) 
             : base(content, parent, contentSerializedProperty, nodeViewSettings)
         {
         }
