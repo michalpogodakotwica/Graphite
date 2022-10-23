@@ -26,7 +26,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
         {
             foreach (var connection in Connections)
             {
-                if (connection is T casted)
+                if (connection.Value is T casted)
                     yield return casted;
             }
         }
