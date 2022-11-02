@@ -13,7 +13,11 @@ namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
 		public static readonly JsonSerializerSettings Settings = new()
 		{
 			ContractResolver = new UnitySerializationResemblingJsonContractResolver(),
-			TypeNameHandling = TypeNameHandling.Objects
+			TypeNameHandling = TypeNameHandling.Objects,
+			Converters = new List<JsonConverter>
+			{
+				new UnityObjectJsonConverter()
+			}
 		};
 
 		public string SerializeGraphElementsCallback(GraphDrawer.GraphDrawer graphDrawer, IEnumerable<GraphElement> elements)

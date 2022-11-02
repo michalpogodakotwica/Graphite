@@ -34,12 +34,6 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
     [Serializable]
     public class ListInput<T> : ListInput
     {
-        /*public bool TryGetValue(out T value)
-        {
-            value = Connection != null ? (T) Connection.Value : default(T); 
-            return Connection != null;
-        }*/
-
         public override Type Type => typeof(T);
     }
 }
