@@ -186,11 +186,11 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
             var nodesKept = Enumerable.Range(0, graphDrawer.NodeDrawers.Count).Except(indexesToRemove).ToArray();
 
-            for (var i = indexesToRemove.Min(); i < nodesKept.Length; i++)
+            for (var newIndex = indexesToRemove.Min(); newIndex < nodesKept.Length; newIndex++)
             {
-                var oldIndex = nodesKept[i];
+                var oldIndex = nodesKept[newIndex];
                 var node = graphDrawer.NodeDrawers[oldIndex];
-                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(i));
+                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(newIndex));
             }
         }
     }
