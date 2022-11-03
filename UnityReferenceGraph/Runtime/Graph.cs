@@ -23,7 +23,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
             _nodes = nodes;
         }
 
-        private void Initialize()
+        protected virtual void Initialize()
         {
             if (_wasInitialized)
                 return;
