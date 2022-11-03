@@ -57,16 +57,6 @@ namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
 				return;
 			
 			var nodes = copyPasteGraphData?.Nodes;
-
-			var internalInputPorts = nodes.SelectMany(GetAllInputs).ToArray();
-			var internalOutputPorts =  nodes.SelectMany(GetAllOutputs).ToArray();
-
-			// stripping outside connections
-			/*foreach (var inputPort in internalInputPorts)
-			foreach (var connection in inputPort.Connection.ToArray())
-				if(!internalOutputPorts.Contains(connection))
-					inputPort.Disconnect(connection);*/
-
 			graphDrawer.AddNodes(nodes);
 		}
 

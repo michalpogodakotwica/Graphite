@@ -44,7 +44,14 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             var connection = _content.Connection;
             if (connection != null)
             {
-                DrawConnection(((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);   
+                if (((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping.TryGetValue(connection, out var drawer))
+                {
+                    DrawConnection(drawer);
+                }
+                else
+                {
+                    InputProperty.FindPropertyRelative("Connection").managedReferenceValue = null;
+                }
             }
         }
 

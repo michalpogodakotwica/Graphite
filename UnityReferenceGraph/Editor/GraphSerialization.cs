@@ -183,16 +183,14 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
 
         private void ReassignProperties(GraphDrawer graphDrawer, List<int> indexesToRemove)
         {
-            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
-            var graphNodes = serializedObject.FindProperty("_nodes");
+            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var nodesKept = Enumerable.Range(0, graphDrawer.NodeDrawers.Count).Except(indexesToRemove).ToArray();
 
-            var oldIndexes = Enumerable.Range(0, graphDrawer.NodeDrawers.Count - 1).Except(indexesToRemove).ToArray();
-
-            for (var newIndex = indexesToRemove.Min(); newIndex < oldIndexes.Length; newIndex++)
+            for (var i = indexesToRemove.Min(); i < nodesKept.Length; i++)
             {
-                var oldIndex = oldIndexes[newIndex];
-                var node = graphDrawer.NodeDrawers[newIndex];
-                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(oldIndex));
+                var oldIndex = nodesKept[i];
+                var node = graphDrawer.NodeDrawers[oldIndex];
+                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(i));
             }
         }
     }

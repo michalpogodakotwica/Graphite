@@ -66,11 +66,28 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
         public override void DrawConnections()
         {
             var currentConnections = _content.Connections.ToArray();
-            for (var index = 0; index < currentConnections.Length; index++)
+            var minIndex = -1;
+            for (var index = currentConnections.Length - 1; index >= 0; index--)
             {
                 var connection = currentConnections[index];
-                DrawConnection(_ports[index], ((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping[connection]);
+                
+                if (((UnityReferenceGraphDrawer)Parent.Parent).OutputsMapping.TryGetValue(connection, out var drawer))
+                {
+                    DrawConnection(_ports[index], drawer);
+                }
+                else
+                {
+                    minIndex = index;
+                    RemovePortView(index);
+                    RemoveFromPropertyAtIndex(index);
+                }
             }
+
+            if (minIndex == -1)
+                return;
+            
+            ReassignPortViewIndexes(0);
+            Parent.RefreshPorts();
         }
 
         private void DrawConnection(Port port, OutputDrawer outputDrawer)

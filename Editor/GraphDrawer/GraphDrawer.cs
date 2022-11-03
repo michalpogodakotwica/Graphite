@@ -113,14 +113,18 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
             ClearSelection();
             
             var addedNodes = GraphSerializationBackend.AddNodes(this, nodesToAdd);
+            var drawers = new List<NodeDrawer>();
             
             foreach (var (nodeSerializedProperty, node) in addedNodes)
             {
                 var drawer = CreateNodeDrawer(node, nodeSerializedProperty);
                 AddNodeDrawer(drawer);
                 AddToSelection(drawer);
-                drawer.DrawConnections();
+                drawers.Add(drawer);
             }
+
+            foreach (var drawer in drawers)
+                drawer.DrawConnections();
         }
         
         private GraphViewChange InternalGraphViewChange(GraphViewChange graphViewChange)
