@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Attributes;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.CompatiblePortsProvider;
@@ -59,7 +60,7 @@ namespace com.michalpogodakotwica.graphite.Editor.Settings
         public bool EnableGrid;
         public StyleSheet[] GraphStyleSheets;
         public ScaleSettings ScaleSettings;
-        public bool OutputsOnRight;
+        public Func<Type, bool> ReverseConnectionFlow;
 
         public DisplaySettings()
         {
@@ -67,7 +68,7 @@ namespace com.michalpogodakotwica.graphite.Editor.Settings
             GraphStyleSheets = new[] { Resources.Load<StyleSheet>("GraphView") };
             
             EnableGrid = true;
-            OutputsOnRight = true;
+            ReverseConnectionFlow = _ => false;
             ScaleSettings = new ScaleSettings();
         }
 
@@ -80,7 +81,7 @@ namespace com.michalpogodakotwica.graphite.Editor.Settings
                 .Where(styleSheet => styleSheet != null)
                 .ToArray();
 
-            OutputsOnRight = attribute.OutputsOnRight;
+            ReverseConnectionFlow = type => attribute.OutputsOnRight.Any(t => t.IsAssignableFrom(type));
             EnableGrid = attribute.EnableGrid;
             ScaleSettings = new ScaleSettings();
         }

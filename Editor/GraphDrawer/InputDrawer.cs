@@ -1,4 +1,5 @@
-﻿using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+﻿using System.Linq;
+using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -36,7 +37,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
         public NodeViewSettings NodeViewSettings => Parent.NodeViewSettings;
         public GraphViewSettings GraphViewSettings => Parent.GraphViewSettings;
         
-        protected VisualElement PortContainer => GraphViewSettings.DisplaySettings.OutputsOnRight ? Parent.inputContainer : Parent.outputContainer;
-        protected Direction PortDirection => GraphViewSettings.DisplaySettings.OutputsOnRight ? Direction.Input : Direction.Output;
+        protected VisualElement PortContainer => GraphViewSettings.DisplaySettings.ReverseConnectionFlow(Content.Type) ? Parent.outputContainer : Parent.inputContainer;
+        protected Direction PortDirection => GraphViewSettings.DisplaySettings.ReverseConnectionFlow(Content.Type) ? Direction.Output : Direction.Input;
     }
 }

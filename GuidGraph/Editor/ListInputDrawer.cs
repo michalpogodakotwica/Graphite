@@ -94,7 +94,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 
         public override bool TryToConnect(OutputDrawer outputDrawer, Edge edge)
         {
-            var input = GraphViewSettings.DisplaySettings.OutputsOnRight ? edge.input : edge.output;
+            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_content.Type) ? edge.output : edge.input;
             
             if (input == _addPort)
             {
@@ -107,9 +107,9 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         
         public override bool TryToDisconnect(OutputDrawer outputDrawer, Edge edge)
         {
-            var input = GraphViewSettings.DisplaySettings.OutputsOnRight 
-                ? (ElementPort)edge.input 
-                : (ElementPort)edge.output;
+            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_content.Type) 
+                ? (ElementPort)edge.output 
+                : (ElementPort)edge.input;
             OnElementPortDisconnected(input.PortIndex);
             return true;
         }
@@ -235,6 +235,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         }
         
         public string ElementName => InputProperty.displayName.TrimEnd('s');
+        public Type Type => _content.Type;
     }
     
     public class ElementPort : Port
@@ -261,8 +262,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 
         public override void Connect(Edge edge)
         {
-            var input = _inputDrawer.GraphViewSettings.DisplaySettings.OutputsOnRight ? edge.input : edge.output;
-            var output = _inputDrawer.GraphViewSettings.DisplaySettings.OutputsOnRight ? edge.output : edge.input;
+            var input = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_inputDrawer.Type) ? edge.input : edge.output;
+            var output = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_inputDrawer.Type) ? edge.output : edge.input;
             
             if (input.node == null && output.node is NodeDrawer outputNodeView)
             {

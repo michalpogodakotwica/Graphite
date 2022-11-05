@@ -8,7 +8,7 @@ namespace Attributes
 
         public readonly bool EnableMinimap;
         public readonly bool EnableGrid;
-        public readonly bool OutputsOnRight;
+        public readonly Type[] OutputsOnRight;
         
         public readonly string[] GraphStyleSheetsResourcePaths;
 
@@ -16,7 +16,7 @@ namespace Attributes
             string title = "GraphView",
             bool enableMinimap = true, 
             bool enableGrid  = true,
-            bool outputsOnRight  = true,
+            Type[] outputsOnRight = null,
             params string[] graphStyleSheetsResourcePaths)
         {
              Title = title;
