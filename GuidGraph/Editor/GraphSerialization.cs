@@ -190,16 +190,14 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 
         private void ReassignProperties(GraphDrawer graphDrawer, List<int> indexesToRemove)
         {
-            var serializedObject = new SerializedObject(graphDrawer.EditorWindow);
-            var graphNodes = serializedObject.FindProperty("_nodes");
-
-            var oldIndexes = Enumerable.Range(0, graphDrawer.NodeDrawers.Count - 1).Except(indexesToRemove).ToArray();
-
-            for (var newIndex = indexesToRemove.Min(); newIndex < oldIndexes.Length; newIndex++)
+            var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
+            var nodesKept = Enumerable.Range(0, graphDrawer.NodeDrawers.Count).Except(indexesToRemove).ToArray();
+            
+            for (var newIndex = indexesToRemove.Min(); newIndex < nodesKept.Length; newIndex++)
             {
-                var oldIndex = oldIndexes[newIndex];
-                var node = graphDrawer.NodeDrawers[newIndex];
-                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(oldIndex));
+                var oldIndex = nodesKept[newIndex];
+                var node = graphDrawer.NodeDrawers[oldIndex];
+                node.ReassignProperty(graphNodes.GetArrayElementAtIndex(newIndex));
             }
         }
     }

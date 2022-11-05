@@ -7,6 +7,7 @@ using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 
 namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 {
@@ -31,7 +32,8 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 			foreach (var (key, value) in _fields)
 			{
 				value.Unbind();
-				value.BindProperty(contentSerializedProperty.FindPropertyRelative(key.Name).serializedObject);
+				var property = contentSerializedProperty.FindPropertyRelative(key.Name);
+				value.BindProperty(property);
 			}
 		}
 
