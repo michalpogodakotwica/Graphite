@@ -12,12 +12,17 @@ namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
         {
             if (value != null)
                 writer.WriteValue(value.GetInstanceID().ToString());
+            else
+                writer.WriteNull();
         }
 
         public override Object? ReadJson(JsonReader reader, Type objectType, Object? existingValue,
             bool hasExistingValue,
             JsonSerializer serializer)
         {
+            if (reader.Value == null)
+                return null;
+
             var readerValue = (string) reader.Value;
             return EditorUtility.InstanceIDToObject(int.Parse(readerValue));
         }
