@@ -76,7 +76,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 			ContentSerializedProperty.serializedObject.Update();
 			
 			var element = new PropertyField(ContentSerializedProperty.FindPropertyRelative(field.Name), label);
-			element.SetEnabled(showInNodeAttribute.IsReadOnly);
+			element.SetEnabled(!showInNodeAttribute.IsReadOnly);
 			return element;
 		}
 	}
