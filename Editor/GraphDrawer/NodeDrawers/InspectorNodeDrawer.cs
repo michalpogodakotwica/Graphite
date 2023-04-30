@@ -71,7 +71,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 			
 			var label = showInNodeAttribute.HideLabel 
 				? "" 
-				: showInNodeAttribute.LabelText == null ? "" : ObjectNames.NicifyVariableName(field.Name);
+				: showInNodeAttribute.LabelText ?? ObjectNames.NicifyVariableName(field.Name);
 
 			ContentSerializedProperty.serializedObject.Update();
 			
