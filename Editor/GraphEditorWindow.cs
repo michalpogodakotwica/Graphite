@@ -52,12 +52,15 @@ namespace com.michalpogodakotwica.graphite.Editor
         
         protected virtual void OnEnable()
         {
-            if (GraphDrawer == null)
+            if (GraphDrawer == null || (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null))
                 InitializeGraphDrawer();
         }
         
         protected virtual void OnInspectorUpdate()
         {
+            if (GraphDrawer == null || (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null))
+                InitializeGraphDrawer();
+            
             if (_graphPropertySerializationRoot == null)
                 Close();
         }
@@ -120,7 +123,7 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         private void InitializeGraphDrawer()
         {
-            if (GraphProperty == null)
+            if (GraphProperty == null || _graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null)
             {
                 LoadGraphProperty();
                 if (GraphProperty == null)

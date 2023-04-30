@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using Attributes;
-using com.michalpogodakotwica.graphite;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 
 namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 {
@@ -73,7 +71,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 			
 			var label = showInNodeAttribute.HideLabel 
 				? "" 
-				: showInNodeAttribute.LabelText ?? ObjectNames.NicifyVariableName(field.Name);
+				: showInNodeAttribute.LabelText == null ? "" : ObjectNames.NicifyVariableName(field.Name);
 
 			ContentSerializedProperty.serializedObject.Update();
 			
