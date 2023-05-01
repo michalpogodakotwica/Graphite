@@ -113,7 +113,8 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         protected static T OpenNewGraphEditorWindow<T>() where T : GraphEditorWindow
         {
-            return CreateWindow<T>(typeof(T));
+            Type sceneViewType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.SceneView");
+            return CreateWindow<T>(typeof(T), sceneViewType);
         }
 
         protected static IEnumerable<T> GetOpenedGraphEditorWindows<T>() where T : GraphEditorWindow
@@ -228,8 +229,8 @@ namespace com.michalpogodakotwica.graphite.Editor
                 GraphProperty.GetFieldInfo().GetCustomAttribute<GraphViewSettingsAttribute>();
             
             return graphDrawingSettingsAttribute != null
-                ? new GraphViewSettings(graphDrawingSettingsAttribute)
-                : new GraphViewSettings();
+                ? new GraphViewSettings(GraphProperty, graphDrawingSettingsAttribute)
+                : new GraphViewSettings(GraphProperty, Graph);
         }        
         
         protected virtual void OnGraphSettingsLoaded()

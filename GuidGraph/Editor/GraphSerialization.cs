@@ -121,8 +121,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
                     if (element is not Edge edge)
                         return false;
 
-                    var outputsOnRight =
-                        !graphDrawer.Settings.DisplaySettings.ReverseConnectionFlow(edge.input.portType);
+                    var outputsOnRight = !graphDrawer.Settings.DisplaySettings.ReverseConnectionFlow;
                     var input = outputsOnRight ? edge.input : edge.output;
                     var output = outputsOnRight ? edge.output : edge.input;
 
@@ -139,8 +138,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         {
             edgesToCreate.RemoveAll(edge =>
                 {
-                    var outputsOnRight =
-                        !graphDrawer.Settings.DisplaySettings.ReverseConnectionFlow(edge.input.portType);
+                    var outputsOnRight = !graphDrawer.Settings.DisplaySettings.ReverseConnectionFlow;
                     var input = outputsOnRight ? edge.input : edge.output;
                     var output = outputsOnRight ? edge.output : edge.input;
 

@@ -37,7 +37,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
         public NodeViewSettings NodeViewSettings => Parent.NodeViewSettings;
         public GraphViewSettings GraphViewSettings => Parent.GraphViewSettings;
         
-        protected VisualElement PortContainer => GraphViewSettings.DisplaySettings.ReverseConnectionFlow(Content.Type) ? Parent.outputContainer : Parent.inputContainer;
-        protected Direction PortDirection => GraphViewSettings.DisplaySettings.ReverseConnectionFlow(Content.Type) ? Direction.Output : Direction.Input;
+        protected VisualElement PortContainer => GraphViewSettings.DisplaySettings.ReverseConnectionFlow ? Parent.outputContainer : Parent.inputContainer;
+        protected Direction PortDirection => GraphViewSettings.DisplaySettings.ReverseConnectionFlow ? Direction.Output : Direction.Input;
     }
 }

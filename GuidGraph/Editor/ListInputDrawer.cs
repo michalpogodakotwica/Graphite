@@ -94,7 +94,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 
         public override bool TryToConnect(OutputDrawer outputDrawer, Edge edge)
         {
-            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_content.Type) ? edge.output : edge.input;
+            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow ? edge.output : edge.input;
             
             if (input == _addPort)
             {
@@ -107,7 +107,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
         
         public override bool TryToDisconnect(OutputDrawer outputDrawer, Edge edge)
         {
-            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_content.Type) 
+            var input = GraphViewSettings.DisplaySettings.ReverseConnectionFlow
                 ? (ElementPort)edge.output 
                 : (ElementPort)edge.input;
             OnElementPortDisconnected(input.PortIndex);
@@ -262,8 +262,8 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
 
         public override void Connect(Edge edge)
         {
-            var input = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_inputDrawer.Type) ? edge.input : edge.output;
-            var output = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow(_inputDrawer.Type) ? edge.output : edge.input;
+            var input = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow ? edge.input : edge.output;
+            var output = _inputDrawer.GraphViewSettings.DisplaySettings.ReverseConnectionFlow ? edge.output : edge.input;
             
             if (input.node == null && output.node is NodeDrawer outputNodeView)
             {
