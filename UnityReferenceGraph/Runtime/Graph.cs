@@ -35,6 +35,11 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
                 node.Initialize();
         }
 
+        public void Reset()
+        {
+            _wasInitialized = false;
+        }
+
         public IEnumerable<INode> Nodes()
         {
             Initialize();
