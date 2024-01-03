@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using com.michalpogodakotwica.graphite.Utils;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
             drawer.OnSerializedPropertyReassigned += ReassignContentProperty;
 
             _fields = drawer.Content.GetType()
-                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetAllInstanceFields()
                 .Where(f => !typeof(IInput).IsAssignableFrom(f.FieldType) && !typeof(IOutput).IsAssignableFrom(f.FieldType) && f.GetCustomAttributes().Any(a => a is SerializeField))
                 .Where(f => !f.GetCustomAttributes().Any(a => a is HideInInspector))
                 .ToDictionary(k => k, CreateControlField);

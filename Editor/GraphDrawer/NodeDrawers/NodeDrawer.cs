@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using com.michalpogodakotwica.graphite.Editor.Settings;
+using com.michalpogodakotwica.graphite.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -184,7 +185,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
         private IEnumerable<FieldInfo> GetFieldsOfType(Type type)
         {
             return Content.GetType()
-                .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetAllInstanceFields()
                 .Where(f => type.IsAssignableFrom(f.FieldType));
         }
         

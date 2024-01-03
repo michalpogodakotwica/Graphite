@@ -148,7 +148,7 @@ namespace com.michalpogodakotwica.graphite.Editor.Utils
             if (container == null)
                 return null;
             var type = container.GetType();
-            var members = type.GetMember(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var members = type.GetMember(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance| BindingFlags.FlattenHierarchy);
             foreach (var memberInfo in members)
             {
                 switch (memberInfo)

@@ -4,6 +4,7 @@ using System.Reflection;
 using Attributes;
 using com.michalpogodakotwica.graphite.Editor.Attributes;
 using com.michalpogodakotwica.graphite.Editor.Settings;
+using com.michalpogodakotwica.graphite.Utils;
 using UnityEditor;
 using UnityEditor.UIElements;
 
@@ -18,7 +19,7 @@ namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
 			NodeViewSettings nodeViewSettings) : base(content, parent, contentSerializedProperty, nodeViewSettings)
 		{
 			_fields = Content.GetType()
-				.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.GetAllInstanceFields()
 				.Where(f => !typeof(IInput).IsAssignableFrom(f.FieldType) && !typeof(IOutput).IsAssignableFrom(f.FieldType))
 				.Where(f => f.GetCustomAttributes().Any(a => a is ShowInNodeAttribute))
 				.ToDictionary(k => k, CreateControlField);
