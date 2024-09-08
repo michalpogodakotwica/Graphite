@@ -8,6 +8,7 @@ using com.michalpogodakotwica.graphite.Editor.Settings;
 using com.michalpogodakotwica.graphite.Editor.Utils;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -16,7 +17,8 @@ namespace com.michalpogodakotwica.graphite.Editor
     /// Parent for graph view. Serializes property path to graph and reopens editor on Unity restart.
     public class GraphEditorWindow : EditorWindow, ISerializationCallbackReceiver
     {
-        private static readonly DrawerTypeMapping<IGraph, GraphDrawer.GraphDrawer, CustomGraphDrawerAttribute> GraphDrawerMapping = new();
+        private static readonly DrawerTypeMapping<IGraph, GraphDrawer.GraphDrawer, CustomGraphDrawerAttribute>
+            GraphDrawerMapping = new();
 
         [SerializeField, HideInInspector]
         private Object _graphPropertySerializationRoot;
@@ -31,32 +33,51 @@ namespace com.michalpogodakotwica.graphite.Editor
         private string _sceneGraphOwnerComponentType;
 
         public IGraph Graph { get; private set; }
+        
         public GraphDrawer.GraphDrawer GraphDrawer { get; private set; }
         public SerializedProperty GraphProperty { get; private set; }
         public GraphViewSettings ViewSettings { get; private set; }
-        
-        public static void OpenGraphWindowForProperty<T>(Object serializationRoot, string graphPropertyPath) where T : GraphEditorWindow
+
+        private bool _isLoading = false;
+
+        public static void OpenGraphWindowForProperty<T>(Object serializationRoot, string graphPropertyPath)
+            where T : GraphEditorWindow
         {
             if (TryGetOpenedGraphEditorWindowWithContent<T>(serializationRoot, graphPropertyPath, out var openedWindow))
             {
                 openedWindow.Focus();
                 return;
             }
-            
+
             var window = OpenNewGraphEditorWindow<T>();
             window._graphPropertyPath = graphPropertyPath;
             window._graphPropertySerializationRoot = serializationRoot;
+            window.OnBeforeSerialize();
             window.InitializeGraphDrawer();
             window.Focus();
         }
-        
+
         protected virtual void OnEnable()
         {
+            ObjectChangeEvents.changesPublished += ChangesPublished;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            
+            if (!_isLoading)
+            {
+                return;
+            }
+
+            _isLoading = false;
+            
             if (GraphDrawer == null || (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null))
                 InitializeGraphDrawer();
+            
+            if (_graphPropertySerializationRoot == null)
+                Close();
         }
-        
-        protected virtual void OnInspectorUpdate()
+
+        private void OnInspectorUpdate()
         {
             if (GraphDrawer == null || (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null))
                 InitializeGraphDrawer();
@@ -73,25 +94,36 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         public virtual void OnBeforeSerialize()
         {
+            if (_graphPropertySerializationRoot == null)
+            {
+                Close();
+                return;
+            }
+
             var isSerializationRootPrefab =
                 PrefabUtility.GetCorrespondingObjectFromSource(_graphPropertySerializationRoot);
-
             if (_graphPropertySerializationRoot is Component component && !isSerializationRootPrefab)
                 SaveSceneSerializationRootData(component);
             else
                 ResetSceneSerializationRootData();
         }
-        
+
         public virtual void OnAfterDeserialize()
         {
+            _isLoading = true;
         }
-        
+
         protected virtual void OnDisable()
         {
+            ObjectChangeEvents.changesPublished -= ChangesPublished;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            
             ClearGraphDrawer();
         }
-        
-        protected static bool TryGetOpenedGraphEditorWindowWithContent<T>(Object serializationRoot, string propertyPath, out T editorWindow) where T : GraphEditorWindow
+
+        protected static bool TryGetOpenedGraphEditorWindowWithContent<T>(Object serializationRoot, string propertyPath,
+            out T editorWindow) where T : GraphEditorWindow
         {
             var openedEditors = GetOpenedGraphEditorWindows<T>();
 
@@ -124,15 +156,24 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         private void InitializeGraphDrawer()
         {
+            if (_graphPropertySerializationRoot == null)
+            {
+                ClearGraphDrawer();
+            }
+            
             if (GraphProperty == null || _graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null)
             {
                 LoadGraphProperty();
+                
                 if (GraphProperty == null)
                     return;
-                
+
                 OnGraphPropertyLoaded();
             }
-
+            
+            if (GraphProperty == null || _graphPropertySerializationRoot == null)
+                return;
+            
             if (Graph == null)
             {
                 LoadGraphFromProperty();
@@ -168,6 +209,8 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         private void LoadGraphProperty()
         {
+            GraphProperty = null;
+            
             if (_graphPropertySerializationRoot == null && _sceneGraphOwnerComponentPath != null)
                 LoadSceneSerializationRoot();
             
@@ -194,8 +237,9 @@ namespace com.michalpogodakotwica.graphite.Editor
                 // ignored
             }
         }
-        
-        protected bool TryGetSerializedProperty(Object serializationRoot, string graphPropertyPath, out SerializedProperty serializedProperty)
+
+        protected bool TryGetSerializedProperty(Object serializationRoot, string graphPropertyPath,
+            out SerializedProperty serializedProperty)
         {
             if (serializationRoot == null || string.IsNullOrWhiteSpace(graphPropertyPath))
             {
@@ -309,6 +353,30 @@ namespace com.michalpogodakotwica.graphite.Editor
 
         protected virtual void OnGraphDrawerCleared()
         {
+        }
+        
+        private void OnSceneUnloaded(Scene scene)
+        {
+            if (_graphPropertySerializationRoot == null)
+            {
+                ClearGraphDrawer();
+            }
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (_graphPropertySerializationRoot == null)
+            {
+                ClearGraphDrawer();
+            }
+        }
+        
+        private void ChangesPublished(ref ObjectChangeEventStream stream)
+        {
+            if (_graphPropertySerializationRoot == null)
+            {
+                ClearGraphDrawer();
+            }
         }
     }
 }

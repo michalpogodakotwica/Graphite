@@ -29,7 +29,8 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
                 return;
 
             _nodes ??= new List<INode>();
-
+            _nodes.RemoveAll(node => node == null);
+            
             _wasInitialized = true;
             foreach (var node in _nodes)
                 node.Initialize();
