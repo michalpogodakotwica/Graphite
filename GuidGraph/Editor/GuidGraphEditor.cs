@@ -28,11 +28,6 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             ClearToolbar();
         }
 
-        protected override void OnGraphLoadedFromProperty()
-        {
-            base.OnGraphPropertyLoaded();
-        }
-
         private void CreateToolbar()
         {
             var root = rootVisualElement;
@@ -50,7 +45,6 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
                 text = "Import (Reload)"
             };
             _toolbar.Add(importButton);
-            
             
             var loadRuntime = new Button(() =>
             {
@@ -90,7 +84,7 @@ namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
             castedGraph.Initialize();
             _nodes = castedGraph.Nodes;
             
-            RedrawGraph();
+            GraphDrawer.RedrawGraph();
         }
     }
 }
