@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using com.michalpogodakotwica.graphite.Editor;
+using Graphite.Editor;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
+namespace Graphite.GuidGraph.Editor
 {
     public class GuidGraphEditor : GraphEditorWindow
     {

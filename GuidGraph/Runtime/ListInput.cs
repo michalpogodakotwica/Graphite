@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
+namespace Graphite.GuidGraph.Runtime
 { 
     public interface IListInput : IInput
     {

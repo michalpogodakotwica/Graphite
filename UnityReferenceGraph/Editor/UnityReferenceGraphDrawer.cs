@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using com.michalpogodakotwica.graphite.Editor;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime;
+using Graphite.Editor;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.GraphDrawer;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
+namespace Graphite.UnityReferenceGraph.Editor
 {
     [CustomGraphDrawer(typeof(Graph))]
     public class UnityReferenceGraphDrawer : GraphDrawer

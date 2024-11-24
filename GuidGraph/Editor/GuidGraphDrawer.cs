@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using com.michalpogodakotwica.graphite.Editor;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.GuidGraph.Runtime;
+using Graphite.Editor;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.GraphDrawer;
+using Graphite.GuidGraph.Runtime;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
+namespace Graphite.GuidGraph.Editor
 {
     [Serializable]
     [CustomGraphDrawer(typeof(Graph))]

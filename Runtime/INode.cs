@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public interface INode
+namespace Graphite
 {
-    public Vector2 Position { get; set; }
+    public interface INode
+    {
+        public Vector2 Position { get; set; }
+    }
 }

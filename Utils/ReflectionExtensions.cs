@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace com.michalpogodakotwica.graphite.Utils
+namespace Graphite.Utils
 {
     public static class ReflectionExtensions
     {

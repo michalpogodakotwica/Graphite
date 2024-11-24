@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
+namespace Graphite.UnityReferenceGraph
 {
     public interface ISingleInput : IInput
     {

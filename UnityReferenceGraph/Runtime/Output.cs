@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
+namespace Graphite.UnityReferenceGraph
 {
     [Serializable]
     public class Output : IOutput

@@ -1,19 +1,18 @@
-﻿using System;
-using System.Linq;
-using Attributes;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.CompatiblePortsProvider;
-using com.michalpogodakotwica.graphite.Editor.CopyPasteHandler;
-using com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider;
-using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+﻿using System.Linq;
+using Graphite.Attributes;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.CompatiblePortsProvider;
+using Graphite.Editor.CopyPasteHandler;
+using Graphite.Editor.CreateNodeSearchWindowProvider;
+using Graphite.Editor.ElementDrawerProvider;
+using Graphite.Editor.GraphDrawer;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor.Settings
+namespace Graphite.Editor.Settings
 {
     public class GraphViewSettings
     {

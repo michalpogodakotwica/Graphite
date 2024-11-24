@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
+namespace Graphite.GuidGraph.Runtime
 {
     public class ContractResolver : DefaultContractResolver
     {

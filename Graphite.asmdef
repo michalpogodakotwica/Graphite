@@ -1,9 +1,7 @@
 {
     "name": "Graphite",
-    "rootNamespace": "",
-    "references": [
-        "Newtonsoft.Json.UnityConverters"
-    ],
+    "rootNamespace": "Graphite",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

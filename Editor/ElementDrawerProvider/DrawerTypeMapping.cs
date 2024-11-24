@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider
+namespace Graphite.Editor.ElementDrawerProvider
 {
     public class DrawerTypeMapping<TContent, TDrawerBaseType, TCustomDrawerAttribute> : IElementDrawerMapping
         where TCustomDrawerAttribute : CustomDrawerAttribute

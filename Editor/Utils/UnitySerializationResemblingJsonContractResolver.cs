@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.Editor.Utils
+namespace Graphite.Editor.Utils
 {
     public class UnitySerializationResemblingJsonContractResolver : DefaultContractResolver
     {

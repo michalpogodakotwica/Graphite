@@ -1,6 +1,6 @@
-﻿namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
+﻿namespace Graphite.UnityReferenceGraph
 {
-    public interface INode : global::INode
+    public interface INode : Graphite.INode
     {
         void Initialize();
     }

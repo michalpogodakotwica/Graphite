@@ -2,7 +2,7 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider
+namespace Graphite.Editor.CreateNodeSearchWindowProvider
 {
     public class CreateNodeSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.Utils;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
+using Graphite.Editor.Utils;
 using Newtonsoft.Json;
 using UnityEditor.Experimental.GraphView;
 
-namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
+namespace Graphite.Editor.CopyPasteHandler
 {
 	public class DefaultCopyPasteHandler : ICopyPasteHandler
 	{

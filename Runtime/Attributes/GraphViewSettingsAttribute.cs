@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Attributes
+namespace Graphite.Attributes
 {
     public class GraphViewSettingsAttribute : Attribute
     {

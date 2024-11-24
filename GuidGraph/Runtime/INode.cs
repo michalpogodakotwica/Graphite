@@ -1,6 +1,6 @@
-﻿namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
+﻿namespace Graphite.GuidGraph.Runtime
 {
-    public interface INode : global::INode
+    public interface INode : Graphite.INode
     {
         void Initialize();
     }

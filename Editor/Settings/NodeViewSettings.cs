@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Attributes;
+using Graphite.Attributes;
 using UnityEditor;
 
-namespace com.michalpogodakotwica.graphite.Editor.Settings
+namespace Graphite.Editor.Settings
 {
     public class NodeViewSettings
     {

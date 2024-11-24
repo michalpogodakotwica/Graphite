@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 
-namespace com.michalpogodakotwica.graphite.Editor.SerializationBackend
+namespace Graphite.Editor.SerializationBackend
 {
     public interface IGraphSerializationBackend
     {

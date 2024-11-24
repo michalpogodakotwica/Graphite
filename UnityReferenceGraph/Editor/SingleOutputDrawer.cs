@@ -1,9 +1,9 @@
-﻿using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+﻿using Graphite.Editor.Attributes;
+using Graphite.Editor.GraphDrawer;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
+namespace Graphite.UnityReferenceGraph.Editor
 {
     [CustomOutputDrawer(typeof(IOutput))]
     public class SingleOutputDrawer : OutputDrawer

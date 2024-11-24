@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.SerializationBackend;
-using com.michalpogodakotwica.graphite.Editor.Utils;
+using Graphite.Editor.GraphDrawer;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
+using Graphite.Editor.SerializationBackend;
+using Graphite.Editor.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
+namespace Graphite.UnityReferenceGraph.Editor
 {
     public class GraphSerialization : IGraphSerializationBackend
     {
-        private void ModifyWithUndo(GraphDrawer graphDrawer,
-            Action applyModification)
+        private void ModifyWithUndo(GraphDrawer graphDrawer, Action applyModification)
         {
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
             graphNodes.serializedObject.Update();
@@ -24,7 +23,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             graphNodes.serializedObject.ApplyModifiedProperties();
         }
 
-        public IEnumerable<(SerializedProperty, INode)> GetAllNodes(
+        public IEnumerable<(SerializedProperty, Graphite.INode)> GetAllNodes(
             GraphDrawer graphDrawer)
         {
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
@@ -33,7 +32,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             for (var i = 0; i < graphNodes.arraySize; i++)
             {
                 var nodeProperty = graphNodes.GetArrayElementAtIndex(i);
-                var node = (Runtime.INode)nodeProperty.GetValue();
+                var node = (INode)nodeProperty.GetValue();
                 node.Initialize();
                 yield return (nodeProperty, node);
             }
@@ -48,21 +47,21 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
             return graphViewChange;
         }
 
-        public IEnumerable<(SerializedProperty, INode)> AddNodes(
+        public IEnumerable<(SerializedProperty, Graphite.INode)> AddNodes(
             GraphDrawer graphDrawer,
-            List<INode> nodesToAdd)
+            List<Graphite.INode> nodesToAdd)
         {
-            List<(SerializedProperty, INode)> addedNodes = default;
+            List<(SerializedProperty, Graphite.INode)> addedNodes = default;
             ModifyWithUndo(graphDrawer, () => { addedNodes = AddNodesWithoutUndo(graphDrawer, nodesToAdd); });
             return addedNodes;
         }
 
-        private List<(SerializedProperty, INode)> AddNodesWithoutUndo(
+        private List<(SerializedProperty, Graphite.INode)> AddNodesWithoutUndo(
             GraphDrawer graphDrawer,
-            List<INode> nodesToAdd)
+            List<Graphite.INode> nodesToAdd)
         {
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
-            var result = new List<(SerializedProperty, INode)>();
+            var result = new List<(SerializedProperty, Graphite.INode)>();
 
             foreach (var node in nodesToAdd)
             {
@@ -70,7 +69,7 @@ namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
                 graphNodes.arraySize++;
                 graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
-                var casted = (Runtime.INode) node;
+                var casted = (INode) node;
                 casted.Initialize();
                 
                 graphNodes.GetArrayElementAtIndex(size).managedReferenceValue = node;

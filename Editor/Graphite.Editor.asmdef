@@ -1,8 +1,7 @@
 {
     "name": "Graphite.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "Graphite.Editor",
     "references": [
-        "Newtonsoft.Json.UnityConverters",
         "Graphite"
     ],
     "includePlatforms": [

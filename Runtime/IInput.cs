@@ -1,6 +1,9 @@
 ﻿using System;
 
-public interface IInput
+namespace Graphite
 {
-    Type Type { get; }
+    public interface IInput
+    {
+        Type Type { get; }
+    }
 }

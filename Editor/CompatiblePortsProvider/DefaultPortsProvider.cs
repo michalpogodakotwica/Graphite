@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 
-namespace com.michalpogodakotwica.graphite.Editor.CompatiblePortsProvider
+namespace Graphite.Editor.CompatiblePortsProvider
 {
     public class DefaultPortsProvider : ICompatiblePortsProvider
     {

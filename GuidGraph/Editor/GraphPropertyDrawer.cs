@@ -1,11 +1,11 @@
-﻿using com.michalpogodakotwica.graphite.Editor;
-using com.michalpogodakotwica.graphite.GuidGraph.Runtime;
+﻿using Graphite.Editor;
+using Graphite.GuidGraph.Runtime;
 using UnityEditor;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Editor
+namespace Graphite.GuidGraph.Editor
 {
     [CustomPropertyDrawer(typeof(Graph), true)]
-    public class GraphPropertyDrawer : graphite.Editor.GraphPropertyDrawer
+    public class GraphPropertyDrawer : Graphite.Editor.GraphPropertyDrawer
     {
         protected override void OpenGraphProperty(SerializedProperty property)
         {

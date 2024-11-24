@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.Utils;
-using com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.GraphDrawer;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
+using Graphite.Editor.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
+namespace Graphite.UnityReferenceGraph.Editor
 {
     [CustomInputDrawer(typeof(IListInput))]
-    public class ListInputDrawer : global::com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawer
+    public class ListInputDrawer : Graphite.Editor.GraphDrawer.InputDrawer
     {
         private readonly IListInput _content;
         

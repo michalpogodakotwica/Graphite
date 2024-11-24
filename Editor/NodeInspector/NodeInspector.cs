@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
+namespace Graphite.Editor.NodeInspector
 {
     internal class NodeInspector : ScriptableObject
     {

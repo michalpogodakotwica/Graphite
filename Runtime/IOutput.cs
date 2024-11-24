@@ -1,7 +1,10 @@
 ﻿using System;
 
-public interface IOutput
+namespace Graphite
 {
-    object Value { get; }
-    Type Type { get; }
+    public interface IOutput
+    {
+        object Value { get; }
+        Type Type { get; }
+    }
 }

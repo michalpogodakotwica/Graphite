@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
+namespace Graphite.GuidGraph.Runtime
 {
     [Serializable]
     public class Output : IOutput

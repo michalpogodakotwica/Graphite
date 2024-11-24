@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace com.michalpogodakotwica.graphite.GuidGraph.Runtime
+namespace Graphite.GuidGraph.Runtime
 {
     [Serializable]
     public class Graph : IGraph

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 
-namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
+namespace Graphite.Editor.CopyPasteHandler
 {
     public interface ICopyPasteHandler
     {

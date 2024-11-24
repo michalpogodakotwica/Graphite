@@ -1,6 +1,6 @@
 {
-    "name": "UnityReferenceGraph",
-    "rootNamespace": "",
+    "name": "Graphite.UnityReferenceGraph",
+    "rootNamespace": "Graphite.UnityReferenceGraph",
     "references": [
         "Graphite"
     ],

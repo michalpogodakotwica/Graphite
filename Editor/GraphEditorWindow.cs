@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Attributes;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
-using com.michalpogodakotwica.graphite.Editor.Settings;
-using com.michalpogodakotwica.graphite.Editor.Utils;
+using Graphite.Attributes;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.ElementDrawerProvider;
+using Graphite.Editor.Settings;
+using Graphite.Editor.Utils;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace com.michalpogodakotwica.graphite.Editor
+namespace Graphite.Editor
 {
     /// Parent for graph view. Serializes property path to graph and reopens editor on Unity restart.
     public class GraphEditorWindow : EditorWindow, ISerializationCallbackReceiver

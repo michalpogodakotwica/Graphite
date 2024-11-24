@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.ElementDrawerProvider;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
+using Graphite.Editor.Attributes;
+using Graphite.Editor.ElementDrawerProvider;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor.NodeInspector
+namespace Graphite.Editor.NodeInspector
 {
 	[CustomEditor(typeof(NodeInspector))]
     public class InspectorEditor : UnityEditor.Editor

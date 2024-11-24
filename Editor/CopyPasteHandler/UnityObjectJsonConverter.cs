@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
-namespace com.michalpogodakotwica.graphite.Editor.CopyPasteHandler
+namespace Graphite.Editor.CopyPasteHandler
 {
     public class UnityObjectJsonConverter : JsonConverter<Object>
     {

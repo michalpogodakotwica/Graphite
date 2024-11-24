@@ -2,7 +2,7 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-namespace com.michalpogodakotwica.graphite.Editor.Utils
+namespace Graphite.Editor.Utils
 {
     /// Mimics Unity's default edge connector listener behaviour.
     public class DefaultEdgeConnectorListener : IEdgeConnectorListener

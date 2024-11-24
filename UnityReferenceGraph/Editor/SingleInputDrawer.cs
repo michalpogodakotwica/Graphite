@@ -1,14 +1,13 @@
-﻿using com.michalpogodakotwica.graphite.Editor.Attributes;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime;
+﻿using Graphite.Editor.Attributes;
+using Graphite.Editor.GraphDrawer;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Editor
+namespace Graphite.UnityReferenceGraph.Editor
 {
     [CustomInputDrawer(typeof(ISingleInput))]
-    public class InputDrawer : global::com.michalpogodakotwica.graphite.Editor.GraphDrawer.InputDrawer
+    public class InputDrawer : Graphite.Editor.GraphDrawer.InputDrawer
     {
         private readonly Port _port;
         private readonly ISingleInput _content;

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor
+namespace Graphite.Editor
 {
     /// Draws button next to graph property that opens GraphEditorWindow.
     [CustomPropertyDrawer(typeof(IGraph), true)]

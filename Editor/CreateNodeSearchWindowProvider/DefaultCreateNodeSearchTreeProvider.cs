@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Attributes;
-using com.michalpogodakotwica.graphite.Editor.Settings;
+using Graphite.Editor.Settings;
+using Graphite.Attributes;
 
-namespace com.michalpogodakotwica.graphite.Editor.CreateNodeSearchWindowProvider
+namespace Graphite.Editor.CreateNodeSearchWindowProvider
 {
     public class DefaultCreateNodeSearchTreeProvider : ICreateNodeSearchTreeProvider
     {

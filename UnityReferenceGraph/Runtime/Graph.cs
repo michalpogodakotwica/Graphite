@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-#endif
 
-namespace com.michalpogodakotwica.graphite.UnityReferenceGraph.Runtime
+namespace Graphite.UnityReferenceGraph
 {
     [Serializable]
-#if ODIN_INSPECTOR
-    [DrawWithUnity]
-#endif
     public class Graph : IGraph
     {
         [SerializeReference]

@@ -1,3 +1,6 @@
-﻿public interface IGraph
+﻿namespace Graphite
 {
+    public interface IGraph
+    {
+    }   
 }

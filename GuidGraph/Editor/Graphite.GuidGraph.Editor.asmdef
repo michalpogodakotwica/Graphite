@@ -1,11 +1,10 @@
 {
-    "name": "GuidGraph.Editor",
-    "rootNamespace": "",
+    "name": "Graphite.GuidGraph.Editor",
+    "rootNamespace": "Graphite.GuidGraph.Editor",
     "references": [
-        "GuidGraph",
         "Graphite.Editor",
         "Graphite",
-        "Newtonsoft.Json.UnityConverters"
+        "Graphite.GuidGraph"
     ],
     "includePlatforms": [
         "Editor"

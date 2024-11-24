@@ -1,6 +1,6 @@
 {
-    "name": "GuidGraph",
-    "rootNamespace": "",
+    "name": "Graphite.GuidGraph",
+    "rootNamespace": "Graphite.GuidGraph",
     "references": [
         "GUID:1b45aa9eeaa71d14dad3ef8fcb42212e"
     ],

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using com.michalpogodakotwica.graphite.Editor.Settings;
-using com.michalpogodakotwica.graphite.Utils;
+using Graphite.Editor.Settings;
+using Graphite.Utils;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Node = UnityEditor.Experimental.GraphView.Node;
 
-namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers
+namespace Graphite.Editor.GraphDrawer.NodeDrawers
 {
     public abstract class NodeDrawer : Node
     {

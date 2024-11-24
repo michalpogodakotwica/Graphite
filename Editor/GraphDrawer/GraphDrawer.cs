@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using com.michalpogodakotwica.graphite.Editor.GraphDrawer.NodeDrawers;
-using com.michalpogodakotwica.graphite.Editor.SerializationBackend;
-using com.michalpogodakotwica.graphite.Editor.Settings;
+using Graphite.Editor.GraphDrawer.NodeDrawers;
+using Graphite.Editor.SerializationBackend;
+using Graphite.Editor.Settings;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace com.michalpogodakotwica.graphite.Editor.GraphDrawer
+namespace Graphite.Editor.GraphDrawer
 {
     [Serializable]
     public abstract class GraphDrawer : GraphView, IDisposable

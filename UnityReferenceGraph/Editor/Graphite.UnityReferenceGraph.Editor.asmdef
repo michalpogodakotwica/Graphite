@@ -1,10 +1,10 @@
 {
-    "name": "UnityReferenceGraph.Editor",
-    "rootNamespace": "",
+    "name": "Graphite.UnityReferenceGraph.Editor",
+    "rootNamespace": "Graphite.UnityReferenceGraph.Editor",
     "references": [
-        "Graphite.Editor",
         "Graphite",
-        "UnityReferenceGraph"
+        "Graphite.Editor",
+        "Graphite.UnityReferenceGraph"
     ],
     "includePlatforms": [
         "Editor"

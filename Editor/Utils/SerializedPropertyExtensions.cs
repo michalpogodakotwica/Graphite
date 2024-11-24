@@ -7,7 +7,7 @@ using UnityEngine;
 // Credit - https://gist.github.com/aholkner/214628a05b15f0bb169660945ac7923b
 // Provide simple value get/set methods for SerializedProperty.  Can be used with
 // any data types and with arbitrarily deeply-pathed properties.
-namespace com.michalpogodakotwica.graphite.Editor.Utils
+namespace Graphite.Editor.Utils
 {
     public static class SerializedPropertyExtensions
     {
