@@ -9,44 +9,28 @@ namespace Graphite.UnityReferenceGraph
     }
     
     [Serializable]
-    public abstract class Input : ISingleInput
+    public class Input<T> : ISingleInput
     {
         [SerializeReference]
         protected IOutput Connection; 
-        
-        public void Connect(IOutput other)
+
+        public Input()
         {
-            Connection = other;
         }
 
-        public void Disconnect(IOutput other)
+        public Input(IOutput connection)
         {
-            if (Connection == other)
-                Connection = null;
+            if (connection.Type == typeof(T))
+                Connection = connection as Output<T>;
         }
 
-        public abstract Type Type { get; }
-        IOutput ISingleInput.Connection => Connection;
-    }
-    
-    [Serializable]
-    public class Input<T> : Input
-    {
-        public Input(IOutput connection = null)
-        {
-            if(connection == null)
-                return;
-
-            if(connection.Type == typeof(T))
-                Connection = connection;
-        }
-        
         public bool TryGetValue(out T value)
         {
-            value = Connection != null ? (T) Connection.Value : default(T); 
+            value = Connection != null ? (T) Connection.Value : default; 
             return Connection != null;
         }
 
-        public override Type Type => typeof(T);
+        public Type Type => typeof(T);
+        IOutput ISingleInput.Connection => Connection;
     }
 }

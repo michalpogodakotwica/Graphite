@@ -9,19 +9,12 @@ namespace Graphite.UnityReferenceGraph
         IEnumerable<IOutput> Connections { get; }
     }
     
-    public abstract class ListInput : IListInput
+    [Serializable]
+    public class ListInput<T> : IListInput
     {
         [SerializeReference]
         protected List<IOutput> Connections = new();
-        
-        public abstract Type Type { get; }
-        
-        IEnumerable<IOutput> IListInput.Connections => Connections;
-    }
-    
-    [Serializable]
-    public class ListInput<T> : ListInput
-    {
+
         public IEnumerable<T> GetValues()
         {
             foreach (var connection in Connections)
@@ -31,6 +24,7 @@ namespace Graphite.UnityReferenceGraph
             }
         }
 
-        public override Type Type => typeof(T);
+        IEnumerable<IOutput> IListInput.Connections => Connections;
+        public Type Type => typeof(T);
     }
 }

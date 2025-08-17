@@ -1,0 +1,7 @@
+.running > * > #title {
+    background-color: green;
+}
+
+.node {
+    min-width: 260px;
+}

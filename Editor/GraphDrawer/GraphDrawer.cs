@@ -16,22 +16,22 @@ namespace Graphite.Editor.GraphDrawer
     {
         public readonly GraphViewSettings Settings;
         public readonly GraphEditorWindow EditorWindow;
-
-        public SerializedProperty GraphProperty => EditorWindow.GraphProperty;
-
-        private readonly CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider _createNodeSearchWindowProviderProvider;
-        
         public readonly List<NodeDrawer> NodeDrawers = new ();
+
+        private readonly CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider _createNodeSearchWindowProvider;
+        
+        public Vector2 MouseScreenPosition { get; private set; }
+        public Vector2 MouseGraphPosition { get; private set; }
+        
         protected IGraphSerializationBackend GraphSerializationBackend;
 
         public GraphDrawer(GraphEditorWindow editorWindow)
         {
             Settings = editorWindow.ViewSettings;
-
             EditorWindow = editorWindow;
             
-            _createNodeSearchWindowProviderProvider = ScriptableObject.CreateInstance<CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider>();
-            _createNodeSearchWindowProviderProvider.Initialize(this);
+            _createNodeSearchWindowProvider = ScriptableObject.CreateInstance<CreateNodeSearchWindowProvider.CreateNodeSearchWindowProvider>();
+            _createNodeSearchWindowProvider.Initialize(this);
             
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
@@ -51,7 +51,7 @@ namespace Graphite.Editor.GraphDrawer
 
             if (Settings.MiniMapSettings.EnableMinimap)
             {
-                Minimap.AddMinimapManipulator(this);
+                Minimap.AddMinimap(this);
             }
 
             if (Settings.DisplaySettings.EnableGrid)
@@ -63,7 +63,7 @@ namespace Graphite.Editor.GraphDrawer
             AddListeners();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             RemoveListeners();
             ClearGraph();
@@ -71,6 +71,8 @@ namespace Graphite.Editor.GraphDrawer
 
         private void AddListeners()
         {
+            EditorWindow.rootVisualElement.RegisterCallback<MouseMoveEvent>(OnMouseMove);
+            
             Undo.undoRedoPerformed += RedrawGraph;
             nodeCreationRequest += OnNodeCreationRequest; 
             graphViewChanged += InternalGraphViewChange;
@@ -85,6 +87,8 @@ namespace Graphite.Editor.GraphDrawer
 
         private void RemoveListeners()
         {
+            EditorWindow.rootVisualElement.UnregisterCallback<MouseMoveEvent>(OnMouseMove);
+            
             Undo.undoRedoPerformed -= RedrawGraph;
             graphViewChanged -= InternalGraphViewChange;
             nodeCreationRequest -= OnNodeCreationRequest;
@@ -143,7 +147,7 @@ namespace Graphite.Editor.GraphDrawer
             return graphViewChange;
         }
 
-        private void ClearGraph()
+        protected virtual void ClearGraph()
         {
             foreach (var nodeView in NodeDrawers)
             {
@@ -198,7 +202,7 @@ namespace Graphite.Editor.GraphDrawer
         protected virtual void OnNodeCreationRequest(NodeCreationContext context)
         {
             var searchWindowContext = new SearchWindowContext(context.screenMousePosition);
-            SearchWindow.Open(searchWindowContext, _createNodeSearchWindowProviderProvider);
+            SearchWindow.Open(searchWindowContext, _createNodeSearchWindowProvider);
         }
         
         public Vector2 ScreenToGraphPosition(Vector2 screenPosition)
@@ -207,5 +211,13 @@ namespace Graphite.Editor.GraphDrawer
             var windowMousePosition = windowRoot.ChangeCoordinatesTo(windowRoot.parent, screenPosition - EditorWindow.position.position);
             return contentViewContainer.WorldToLocal(windowMousePosition);
         }
+
+        private void OnMouseMove(MouseMoveEvent mouseMoveEvent)
+        {           
+            MouseScreenPosition = mouseMoveEvent.mousePosition + EditorWindow.position.position;
+            MouseGraphPosition = ScreenToGraphPosition(MouseScreenPosition);
+        }
+
+        public SerializedProperty GraphProperty => EditorWindow.GraphProperty;
     }
 }

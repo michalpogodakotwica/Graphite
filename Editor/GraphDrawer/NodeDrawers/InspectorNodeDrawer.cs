@@ -7,13 +7,14 @@ using Graphite.Editor.Settings;
 using Graphite.Utils;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 namespace Graphite.Editor.GraphDrawer.NodeDrawers
 {
 	[CustomNodeDrawer(typeof(INode))]
 	public class InspectorNodeDrawer : NodeDrawer
 	{
-		private readonly Dictionary<FieldInfo, PropertyField> _fields;
+		private readonly Dictionary<FieldInfo, IBindable> _fields;
 
 		public InspectorNodeDrawer(INode content, GraphDrawer parent, SerializedProperty contentSerializedProperty,
 			NodeViewSettings nodeViewSettings) : base(content, parent, contentSerializedProperty, nodeViewSettings)
@@ -30,7 +31,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
 			base.ReassignProperty(contentSerializedProperty);
 			foreach (var (key, value) in _fields)
 			{
-				value.Unbind();
+				((VisualElement)value).Unbind();
 				var property = contentSerializedProperty.FindPropertyRelative(key.Name);
 				value.BindProperty(property);
 			}
@@ -41,7 +42,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
 			base.ClearNode();
 			foreach (var controlField in _fields.Values)
 			{
-				controlField.Unbind();
+				((VisualElement)controlField).Unbind();
 			}
 		}
 
@@ -56,14 +57,14 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
 		{
 			foreach (var controlField in _fields.Values)
 			{
-				mainContainer.Add(controlField);
+				mainContainer.Add((VisualElement)controlField);
 				controlField.BindProperty(ContentSerializedProperty.serializedObject);
 			}
 			
 			RefreshExpandedState();
 		}
 
-		private PropertyField CreateControlField(FieldInfo field)
+		protected virtual IBindable CreateControlField(FieldInfo field)
 		{
 			if (field == null)
 				return null;

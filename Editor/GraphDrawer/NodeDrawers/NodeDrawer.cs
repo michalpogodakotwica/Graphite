@@ -111,6 +111,13 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
             foreach (var inputField in inputFields)
             {
                 var inputContent = (IInput) inputField.GetValue(Content);
+                
+                if (inputContent == null)
+                {
+                    inputContent = (IInput) Activator.CreateInstance(inputField.FieldType);
+                    inputField.SetValue(Content, inputContent);
+                }
+                
                 var inputDrawerType = GraphViewSettings.InputDrawerTypeMapping.GetDrawerForType(inputContent.GetType());
                 var drawer = (InputDrawer) Activator.CreateInstance(inputDrawerType,
                     inputContent,
@@ -149,6 +156,13 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
             foreach (var outputField in outputFields)
             {
                 var outputContent = (IOutput) outputField.GetValue(Content);
+                
+                if (outputContent == null)
+                {
+                    outputContent = (IOutput)Activator.CreateInstance(outputField.FieldType);
+                    outputField.SetValue(Content, outputContent);
+                }
+                
                 var outputDrawerType = GraphViewSettings.OutputDrawerTypeMapping.GetDrawerForType(outputContent.GetType());
                 var drawer = (OutputDrawer) Activator.CreateInstance(
                     outputDrawerType,
@@ -188,7 +202,7 @@ namespace Graphite.Editor.GraphDrawer.NodeDrawers
                 .GetAllInstanceFields()
                 .Where(f => type.IsAssignableFrom(f.FieldType));
         }
-        
+
         public IReadOnlyDictionary<Port, InputDrawer> InputMap => inputMap;
         public IReadOnlyDictionary<Port, OutputDrawer> OutputMap => outputMap;
     }

@@ -1,0 +1,19 @@
+.sticky-note {
+    background-color: rgba(255, 255, 153, 0.8);
+    padding: 16px;
+}
+
+#selection-border {
+    border-radius: 0px;
+    margin: 0px;
+}
+
+#unity-text-input {
+    border-color: transparent;
+    background-color: transparent;
+    --unity-cursor-color: #282828;
+    margin: 0px;
+    padding: 0px;
+    font-size: 20px;
+    color: #584308;
+}

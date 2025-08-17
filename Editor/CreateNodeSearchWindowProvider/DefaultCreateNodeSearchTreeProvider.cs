@@ -9,28 +9,45 @@ namespace Graphite.Editor.CreateNodeSearchWindowProvider
 {
     public class DefaultCreateNodeSearchTreeProvider : ICreateNodeSearchTreeProvider
     {
-        public List<CreateNodeEntry> CreateSearchTree()
+        private static List<CreateNodeEntry> _searchTree;
+        
+        public List<CreateNodeEntry> CreateSearchTree() => _searchTree ??= BuildSearchTree();
+
+        private static List<CreateNodeEntry> BuildSearchTree()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray();
+            var entryBuffer = new List<CreateNodeEntry>(512);
 
-            var creationMethods = assemblies
-                .SelectMany(a => a.GetTypes())
-                .SelectMany(t => t.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy))
-                .Where(IsValidCreationMethod)
-                .Select(GetCreateNodeEntryFromCreationMethod);
-
-            var nonAbstractNodeTypes = assemblies.SelectMany(assembly => assembly.GetTypes())
-                .Where(t => typeof(INode).IsAssignableFrom(t) && !t.IsAbstract);
-
-            var constructors = nonAbstractNodeTypes.Select(GetCreateNodeEntryFromConstructor);
-
-            return creationMethods.Concat(constructors).OrderBy(d => d.Path).ToList();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+#if GRAPHITE_ALLOW_CREATION_METHODS
+                    foreach (var method in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public 
+                                 | BindingFlags.Static | BindingFlags.FlattenHierarchy))
+                    {
+                        if (IsValidCreationMethod(method))
+                        {
+                            entryBuffer.Add(GetCreateNodeEntryFromCreationMethod(method));
+                        }
+                    }
+#endif
+                    if (typeof(INode).IsAssignableFrom(type) && !type.IsAbstract)
+                    {
+                        entryBuffer.Add(GetCreateNodeEntryFromConstructor(type));
+                    }
+                }
+            }
+            return entryBuffer;
         }
 
         private static bool IsValidCreationMethod(MethodInfo method)
         {
-            return method.GetCustomAttribute(typeof(CreateNodeSearchItem), false) != null &&
-                   typeof(INode).IsAssignableFrom(method.ReturnType) && method.GetParameters().Length == 0;
+            if (!typeof(INode).IsAssignableFrom(method.ReturnType) || method.GetParameters().Length != 0)
+            {
+                return false;
+            }
+            
+            return method.GetCustomAttribute(typeof(CreateNodeSearchItem), false) != null;
         }
         
         private static CreateNodeEntry GetCreateNodeEntryFromCreationMethod(MethodInfo method)

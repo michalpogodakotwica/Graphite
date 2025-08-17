@@ -2,7 +2,8 @@
     "name": "Graphite.Editor",
     "rootNamespace": "Graphite.Editor",
     "references": [
-        "Graphite"
+        "Graphite",
+        "VContainer"
     ],
     "includePlatforms": [
         "Editor"

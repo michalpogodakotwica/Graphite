@@ -3,16 +3,17 @@
 namespace Graphite.UnityReferenceGraph
 {
     [Serializable]
-    public class Output : IOutput
+    public class Output<T> : IOutput
     {
-        public void Initialize<T>(Func<T> getValue)
+        public Func<T> GetValue { get; set; }
+        
+        public void Initialize(Func<T> getValue)
         {
-            GetValue = () => getValue.Invoke();
-            Type = typeof(T);
+            GetValue = getValue;
         }
 
-        public Type Type { get; private set; }
-        public Func<object> GetValue { get; set; }
-        object IOutput.Value => GetValue.Invoke();
+        public T Value => GetValue.Invoke();
+        public Type Type => typeof(T);
+        object IOutput.Value => Value;
     }
 }

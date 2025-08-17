@@ -24,19 +24,19 @@ namespace Graphite.Editor
 
         [SerializeField, HideInInspector]
         private Object _graphPropertySerializationRoot;
-        
+        [SerializeField, HideInInspector]
+        private string _graphSerializationRootGlobalId;
         [SerializeField, HideInInspector]
         private string _graphPropertyPath;
         [SerializeField, HideInInspector]
-        private int _graphOwnerInstanceId;
-
-        public IGraph Graph { get; private set; }
+        private bool _loadGraphPropertySerializationRoot;
         
+        public IGraph Graph { get; private set; }
         public GraphDrawer.GraphDrawer GraphDrawer { get; private set; }
         public SerializedProperty GraphProperty { get; private set; }
         public GraphViewSettings ViewSettings { get; private set; }
 
-        private bool _loadGraphPropertySerializationRoot = false;
+        private bool _wasInitialized;
         
         public static void OpenGraphWindowForProperty<T>(Object serializationRoot, string graphPropertyPath)
             where T : GraphEditorWindow
@@ -49,13 +49,12 @@ namespace Graphite.Editor
 
             var window = OpenNewGraphEditorWindow<T>();
             
-            window._graphPropertyPath = graphPropertyPath;
             window._graphPropertySerializationRoot = serializationRoot;
-            window._graphOwnerInstanceId = serializationRoot.GetInstanceID();
+            window._graphPropertyPath = graphPropertyPath;
+            window._graphSerializationRootGlobalId = GlobalObjectId.GetGlobalObjectIdSlow(serializationRoot).ToString();
             
             window.LoadGraphProperty();
             window.InitializeGraphDrawer();
-            window.Focus();
         }
         
         protected static bool TryGetOpenedGraphEditorWindowWithContent<T>(Object serializationRoot, string propertyPath,
@@ -75,7 +74,7 @@ namespace Graphite.Editor
                 return true;
             }
 
-            editorWindow = default;
+            editorWindow = null;
             return false;
         }
 
@@ -90,6 +89,49 @@ namespace Graphite.Editor
             return Resources.FindObjectsOfTypeAll<T>();
         }
         
+        protected virtual void OnEnable()
+        {
+            PrefabStage.prefabStageClosing += OnPrefabStageClosing;
+            ObjectChangeEvents.changesPublished += ChangesPublished;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            EditorApplication.playmodeStateChanged += OnModeChanged;
+            
+            if (!_loadGraphPropertySerializationRoot)
+                return;
+            
+            _loadGraphPropertySerializationRoot = false;
+            LoadGraphProperty();
+            if (Graph != null)
+                InitializeGraphDrawer();
+        }
+
+        private void OnInspectorUpdate()
+        {
+            if (_graphPropertySerializationRoot == null)
+                Close();
+        }
+        
+        protected virtual void OnDisable()
+        {
+            PrefabStage.prefabStageClosing -= OnPrefabStageClosing;
+            ObjectChangeEvents.changesPublished -= ChangesPublished;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            EditorApplication.playmodeStateChanged -= OnModeChanged;
+
+            ClearGraphProperty();
+            ClearGraphDrawer();
+        }
+
+        protected void OnFocus()
+        {
+            if (_wasInitialized && _graphPropertySerializationRoot == null)
+            {
+                Close();
+            }
+        }
+
         public virtual void OnBeforeSerialize()
         {
         }
@@ -99,62 +141,35 @@ namespace Graphite.Editor
             _loadGraphPropertySerializationRoot = true;
         }
         
-        protected virtual void OnEnable()
-        {
-            PrefabStage.prefabStageClosing += OnPrefabStageClosing;
-            ObjectChangeEvents.changesPublished += ChangesPublished;
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneManager.sceneUnloaded += OnSceneUnloaded;
-            
-            if (!_loadGraphPropertySerializationRoot)
-            {
-                return;
-            }
-            _loadGraphPropertySerializationRoot = false;
-            
-            LoadGraphProperty();
-            if (Graph != null)
-            {
-                InitializeGraphDrawer();
-            }
-        }
-
-        protected virtual void OnDisable()
-        {
-            PrefabStage.prefabStageClosing -= OnPrefabStageClosing;
-            ObjectChangeEvents.changesPublished -= ChangesPublished;
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            SceneManager.sceneUnloaded -= OnSceneUnloaded;
-
-            ClearGraphProperty();
-            ClearGraphDrawer();
-        }
-
         private void LoadGraphProperty()
         {
+            GraphProperty = null;
+            Graph = null;
+            
             if (_graphPropertySerializationRoot == null)
             {
-                _graphPropertySerializationRoot = EditorUtility.InstanceIDToObject(_graphOwnerInstanceId);
+                if (!GlobalObjectId.TryParse(_graphSerializationRootGlobalId, out var globalObjectId))
+                {
+                    Close();
+                    return;
+                }
+                _graphPropertySerializationRoot = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
+                if (_graphPropertySerializationRoot == null)
+                {
+                    Close();
+                    return;
+                }
             }
-
-            GraphProperty = default;
-            Graph = default;
             
-            if (_graphPropertySerializationRoot == null || string.IsNullOrWhiteSpace(_graphPropertyPath))
-            {
-                return;
-            }
-
             var serializedObject = new SerializedObject(_graphPropertySerializationRoot);
             GraphProperty = serializedObject.FindProperty(_graphPropertyPath);
-            
             if (GraphProperty == null)
             {
+                Close();
                 return;
             }
             
             InitializeSettings();
-            
             Graph = (IGraph)GraphProperty?.GetValue();
         }
         
@@ -196,13 +211,13 @@ namespace Graphite.Editor
                 graphDrawerType,
                 new object[] { this }
             );
-                
             if (GraphDrawer == null)
             {
+                Close();
                 return;
             }
-
             OnGraphDrawerCreated();
+            _wasInitialized = true;
         }
         
         protected virtual void OnGraphDrawerCreated()
@@ -234,50 +249,35 @@ namespace Graphite.Editor
         {
         }
         
+        private void OnModeChanged()
+        {
+            if (_graphPropertySerializationRoot == null)
+                Close();
+        }
+        
         private void OnSceneUnloaded(Scene scene)
         {
-            ClearIfSerializationRootIsLost();
-            TryReload();
+            if (_graphPropertySerializationRoot == null)
+                Close();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
-            ClearIfSerializationRootIsLost();
-            TryReload();
+            if (_graphPropertySerializationRoot == null)
+                Close();
         }
         
         private void ChangesPublished(ref ObjectChangeEventStream stream)
         {
-            ClearIfSerializationRootIsLost();
-            TryReload();
+            if (_graphPropertySerializationRoot == null)
+                Close();
         }
 
         private void OnPrefabStageClosing(PrefabStage obj)
         {
-            if (_graphPropertySerializationRoot is not Component component || !obj.IsPartOfPrefabContents(component.gameObject))
-                return;
-            
-            ClearGraphDrawer();
-            Close();
-        }
-        
-        private void ClearIfSerializationRootIsLost()
-        {
-            if (_graphPropertySerializationRoot != null)
-                return;
-            
-            ClearGraphProperty();
-            ClearGraphDrawer();
-        }
-
-        private void TryReload()
-        {
-            if (GraphDrawer != null) 
-                return;
-
-            LoadGraphProperty();
-            if (Graph != null)
-                InitializeGraphDrawer();
+            if (_graphPropertySerializationRoot is Component component &&
+                obj.IsPartOfPrefabContents(component.gameObject))
+                Close();
         }
     }
 }

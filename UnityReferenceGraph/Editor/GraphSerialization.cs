@@ -23,8 +23,7 @@ namespace Graphite.UnityReferenceGraph.Editor
             graphNodes.serializedObject.ApplyModifiedProperties();
         }
 
-        public IEnumerable<(SerializedProperty, Graphite.INode)> GetAllNodes(
-            GraphDrawer graphDrawer)
+        public IEnumerable<(SerializedProperty, Graphite.INode)> GetAllNodes(GraphDrawer graphDrawer)
         {
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
             graphNodes.serializedObject.Update();
@@ -33,13 +32,11 @@ namespace Graphite.UnityReferenceGraph.Editor
             {
                 var nodeProperty = graphNodes.GetArrayElementAtIndex(i);
                 var node = (INode)nodeProperty.GetValue();
-                node.Initialize();
                 yield return (nodeProperty, node);
             }
         }
 
-        public GraphViewChange SerializeGraphViewChange(
-            GraphDrawer graphDrawer, GraphViewChange viewChanges)
+        public GraphViewChange SerializeGraphViewChange(GraphDrawer graphDrawer, GraphViewChange viewChanges)
         {
             GraphViewChange graphViewChange = default;
             ModifyWithUndo(graphDrawer,
@@ -47,11 +44,10 @@ namespace Graphite.UnityReferenceGraph.Editor
             return graphViewChange;
         }
 
-        public IEnumerable<(SerializedProperty, Graphite.INode)> AddNodes(
-            GraphDrawer graphDrawer,
+        public IEnumerable<(SerializedProperty, Graphite.INode)> AddNodes(GraphDrawer graphDrawer,
             List<Graphite.INode> nodesToAdd)
         {
-            List<(SerializedProperty, Graphite.INode)> addedNodes = default;
+            List<(SerializedProperty, Graphite.INode)> addedNodes = null;
             ModifyWithUndo(graphDrawer, () => { addedNodes = AddNodesWithoutUndo(graphDrawer, nodesToAdd); });
             return addedNodes;
         }
@@ -68,9 +64,6 @@ namespace Graphite.UnityReferenceGraph.Editor
                 var size = graphNodes.arraySize;
                 graphNodes.arraySize++;
                 graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-
-                var casted = (INode) node;
-                casted.Initialize();
                 
                 graphNodes.GetArrayElementAtIndex(size).managedReferenceValue = node;
                 graphNodes.serializedObject.ApplyModifiedPropertiesWithoutUndo();
@@ -85,8 +78,7 @@ namespace Graphite.UnityReferenceGraph.Editor
             return result;
         }
 
-        private GraphViewChange GraphViewChangeWithoutUndo(
-            GraphDrawer graphDrawer, GraphViewChange viewChanges)
+        private GraphViewChange GraphViewChangeWithoutUndo(GraphDrawer graphDrawer, GraphViewChange viewChanges)
         {
             if (viewChanges.movedElements != null)
                 MoveNodeViews(graphDrawer, ref viewChanges.movedElements, viewChanges.moveDelta);
@@ -109,8 +101,7 @@ namespace Graphite.UnityReferenceGraph.Editor
             elementsToMove.RemoveAll(m => m is NodeDrawer nodeView && !nodeView.TryToMove(movementDelta));
         }
 
-        private void RemoveEdges(GraphDrawer graphDrawer,
-            ref List<GraphElement> elementsToRemove)
+        private void RemoveEdges(GraphDrawer graphDrawer, ref List<GraphElement> elementsToRemove)
         {
             elementsToRemove.RemoveAll(element =>
                 {
@@ -129,8 +120,7 @@ namespace Graphite.UnityReferenceGraph.Editor
             );
         }
 
-        private void CreateEdges(GraphDrawer graphDrawer,
-            ref List<Edge> edgesToCreate)
+        private void CreateEdges(GraphDrawer graphDrawer, ref List<Edge> edgesToCreate)
         {
             edgesToCreate.RemoveAll(edge =>
                 {
@@ -147,8 +137,7 @@ namespace Graphite.UnityReferenceGraph.Editor
             );
         }
 
-        private void RemoveNodeViews(GraphDrawer graphDrawer,
-            ref List<GraphElement> elementsToRemove)
+        private void RemoveNodeViews(GraphDrawer graphDrawer, ref List<GraphElement> elementsToRemove)
         {
             var graphNodes = graphDrawer.GraphProperty.FindPropertyRelative("_nodes");
 

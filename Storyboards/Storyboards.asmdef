@@ -1,0 +1,19 @@
+{
+    "name": "Storyboards",
+    "rootNamespace": "",
+    "references": [
+        "VContainer",
+        "Graphite.UnityReferenceGraph",
+        "Graphite",
+        "Graphite.UnityReferenceGraph.Editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -5,6 +5,7 @@ using Graphite.Editor.GraphDrawer.NodeDrawers;
 using Graphite.Editor.Utils;
 using Newtonsoft.Json;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 namespace Graphite.Editor.CopyPasteHandler
 {
@@ -52,11 +53,23 @@ namespace Graphite.Editor.CopyPasteHandler
 			graphDrawer.ClearSelection();
 
 			var copyPasteGraphData = JsonConvert.DeserializeObject<DefaultCopyPasteGraphData>(data, Settings);
-			
-			if (copyPasteGraphData == null)
+
+			if (copyPasteGraphData?.Nodes == null || copyPasteGraphData.Nodes.Count == 0)
+			{
 				return;
+			}
 			
-			var nodes = copyPasteGraphData?.Nodes;
+			var nodes = copyPasteGraphData.Nodes;
+			var nodesCenter = nodes
+				.Select(n => n.Position)
+				.Aggregate(Vector2.zero, (current, position) => current + position) / nodes.Count;
+			
+			var mouseGraphPosition = graphDrawer.MouseGraphPosition;
+			foreach (var node in nodes)
+			{
+				var originalDelta = node.Position - nodesCenter;
+				node.Position = mouseGraphPosition + originalDelta;
+			}
 			graphDrawer.AddNodes(nodes);
 		}
 
